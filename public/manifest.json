@@ -1,0 +1,17 @@
+{
+  "name": "Lovers Diet Center",
+  "short_name": "Lovers Diet",
+  "description": "Premium Health and Nutrition Clinic",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0f0a",
+  "theme_color": "#0a0f0a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "192x192 512x512",
+      "type": "image/x-icon"
+    }
+  ]
+}

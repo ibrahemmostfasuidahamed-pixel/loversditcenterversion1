@@ -1,0 +1,177 @@
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
+
+export const siteConfig = {
+    name: "Lover Diet Center",
+    nameAr: "لوفر دايت سنتر",
+    tagline: "Together for better life",
+    taglineAr: "معاً لحياة أفضل",
+    phone: "+971 50 123 4567",
+    email: "info@loversdietcenter.ae",
+    address: "Dubai, UAE",
+    addressAr: "دبي، الإمارات",
+};
+
+export const services = [
+    { id: 1, icon: "🩺", nameKey: "services.1", descKey: "services.1.desc" },
+    { id: 2, icon: "💊", nameKey: "services.2", descKey: "services.2.desc" },
+    { id: 3, icon: "🥦", nameKey: "services.3", descKey: "services.3.desc" },
+    { id: 4, icon: "📊", nameKey: "services.4", descKey: "services.4.desc" },
+    { id: 5, icon: "💉", nameKey: "services.5", descKey: "services.5.desc" },
+    { id: 6, icon: "🧘", nameKey: "services.6", descKey: "services.6.desc" },
+];
+
+export const products = [
+    {
+        id: "slimming-tea",
+        name: "Slimming Tea Blend",
+        nameAr: "شاي التخسيس",
+        description: "Premium herbal tea blend with green tea, ginger, and natural fat-burning ingredients.",
+        descAr: "مزيج شاي عشبي مع الشاي الأخضر والزنجبيل ومكونات حرق الدهون الطبيعية.",
+        price: 149,
+        currency: "AED",
+        category: "supplements",
+        rating: 4.5,
+        reviews: 124,
+        image: "🍵",
+    },
+    {
+        id: "protein-shake",
+        name: "Protein Shake - Vanilla",
+        nameAr: "بروتين شيك - فانيلا",
+        description: "High-quality whey protein shake with essential vitamins and minerals.",
+        descAr: "بروتين واي عالي الجودة مع الفيتامينات والمعادن الأساسية.",
+        price: 199,
+        currency: "AED",
+        category: "supplements",
+        rating: 4.7,
+        reviews: 89,
+        image: "🥤",
+    },
+    {
+        id: "appetite-capsules",
+        name: "Appetite Control Capsules",
+        nameAr: "كبسولات تحكم الشهية",
+        description: "Natural appetite suppressant capsules with Garcinia Cambogia.",
+        descAr: "كبسولات طبيعية لتقليل الشهية مع جارسينيا كامبوغيا.",
+        price: 249,
+        currency: "AED",
+        category: "supplements",
+        rating: 4.3,
+        reviews: 156,
+        image: "💊",
+    },
+    {
+        id: "detox-juice",
+        name: "Detox Green Juice",
+        nameAr: "عصير ديتوكس أخضر",
+        description: "Cold-pressed detox juice blend for daily cleansing and energy boost.",
+        descAr: "مزيج عصير ديتوكس مضغوط على البارد للتنظيف اليومي وزيادة الطاقة.",
+        price: 89,
+        currency: "AED",
+        category: "supplements",
+        rating: 4.6,
+        reviews: 210,
+        image: "🥬",
+    },
+    {
+        id: "collagen-powder",
+        name: "Collagen Beauty Powder",
+        nameAr: "بودرة كولاجين الجمال",
+        description: "Marine collagen powder for skin elasticity and joint health.",
+        descAr: "بودرة كولاجين بحري لمرونة البشرة وصحة المفاصل.",
+        price: 299,
+        currency: "AED",
+        category: "supplements",
+        rating: 4.8,
+        reviews: 67,
+        image: "✨",
+    },
+    {
+        id: "meal-plan-4week",
+        name: "4-Week Meal Plan",
+        nameAr: "خطة وجبات ٤ أسابيع",
+        description: "Personalized 4-week meal plan with grocery lists and recipes.",
+        descAr: "خطة وجبات مخصصة لـ ٤ أسابيع مع قوائم تسوق ووصفات.",
+        price: 499,
+        currency: "AED",
+        category: "meal-plans",
+        rating: 4.9,
+        reviews: 43,
+        image: "📋",
+    },
+];
+
+export const testimonials = [
+    {
+        id: 1,
+        name: "Sarah Ahmed",
+        nameAr: "سارة أحمد",
+        text: "Lover Diet Center completely changed my life! Lost 25 kg in 6 months.",
+        textAr: "لوفر دايت سنتر غيّر حياتي تماماً! فقدت ٢٥ كجم في ٦ أشهر.",
+        rating: 5,
+        weightLost: "25 kg",
+        avatar: "SA",
+    },
+    {
+        id: 2,
+        name: "Mohammed Al-Rashid",
+        nameAr: "محمد الراشد",
+        text: "Professional team, personalized approach. I finally achieved my target weight.",
+        textAr: "فريق محترف ونهج شخصي. أخيراً حققت وزني المستهدف.",
+        rating: 5,
+        weightLost: "30 kg",
+        avatar: "MR",
+    },
+    {
+        id: 3,
+        name: "Fatima Hassan",
+        nameAr: "فاطمة حسن",
+        text: "The medical supervision made all the difference. Safe and effective results.",
+        textAr: "الإشراف الطبي أحدث فرقاً كبيراً. نتائج آمنة وفعالة.",
+        rating: 5,
+        weightLost: "18 kg",
+        avatar: "FH",
+    },
+    {
+        id: 4,
+        name: "Omar Khalil",
+        nameAr: "عمر خليل",
+        text: "Their products really work! Combined with the diet plan, amazing results.",
+        textAr: "منتجاتهم فعالة حقاً! مع خطة الحمية، نتائج مذهلة.",
+        rating: 4,
+        weightLost: "15 kg",
+        avatar: "OK",
+    },
+];
+
+export const doctors = [
+    {
+        id: 1,
+        name: "Dr. Amira Al-Sayed",
+        nameAr: "د. أميرة السيد",
+        specialty: "Clinical Nutrition",
+        specialtyAr: "التغذية السريرية",
+        avatar: "AS",
+    },
+    {
+        id: 2,
+        name: "Dr. Hassan Ibrahim",
+        nameAr: "د. حسن إبراهيم",
+        specialty: "Bariatric Medicine",
+        specialtyAr: "طب السمنة",
+        avatar: "HI",
+    },
+    {
+        id: 3,
+        name: "Dr. Layla Mahmoud",
+        nameAr: "د. ليلى محمود",
+        specialty: "Dietetics & Wellness",
+        specialtyAr: "الحمية والعافية",
+        avatar: "LM",
+    },
+];

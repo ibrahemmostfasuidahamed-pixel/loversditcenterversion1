@@ -1,0 +1,201 @@
+{
+    "nav": {
+        "home": "Home",
+        "services": "Services",
+        "howItWorks": "How It Works",
+        "results": "Results",
+        "contact": "Contact Us",
+        "bookNow": "Book Now"
+    },
+    "hero": {
+        "badge": "🌿 Premier Nutrition Clinic",
+        "title": "A Healthier Life\nStarts Here",
+        "subtitle": "Specialized nutrition programs and balanced healthy meals\nto achieve your health and fitness goals",
+        "cta1": "Book Your Consultation",
+        "cta2": "Explore Our Services",
+        "offer": "🎉 10% OFF Healthy Meals Now!"
+    },
+    "services": {
+        "title": "Our Services",
+        "subtitle": "Everything you need for a complete healthy lifestyle",
+        "bookNow": "Book Now",
+        "learnMore": "Learn More",
+        "items": [
+            {
+                "id": "meals",
+                "icon": "🍽️",
+                "title": "Balanced Healthy Meals",
+                "description": "Fresh, carefully prepared meals with delivery service",
+                "features": [
+                    "100% Fresh Ingredients",
+                    "Designed by Nutritionists",
+                    "Daily Door-to-Door Delivery",
+                    "Varied Weekly Menus",
+                    "Suitable for All Diets",
+                    "Precise Calorie Counting"
+                ],
+                "color": "#2E7D32"
+            },
+            {
+                "id": "consultation",
+                "icon": "🌿",
+                "title": "Specialized Nutrition Consulting",
+                "description": "Personalized nutrition programs precisely designed to achieve your health and fitness goals",
+                "features": [
+                    "Accurate Body Analysis",
+                    "Personal Nutrition Plan",
+                    "Continuous Weekly Follow-up",
+                    "Program Adjustment by Progress",
+                    "Psychological Support & Motivation",
+                    "Guaranteed Results"
+                ],
+                "color": "#388E3C"
+            },
+            {
+                "id": "fatburn",
+                "icon": "💪",
+                "title": "Professional Fat Burning Sessions",
+                "description": "Advanced techniques for body sculpting, skin tightening, and fat burning stimulation",
+                "features": [
+                    "Cavitation & Radiofrequency Sessions",
+                    "Skin Tightening & Smoothing",
+                    "Local Fat Burning Stimulation",
+                    "Visible Results from First Session",
+                    "Certified Medical Equipment",
+                    "Certified Specialists"
+                ],
+                "color": "#1B5E20"
+            },
+            {
+                "id": "supplements",
+                "icon": "💊",
+                "title": "Nutritional Products & Supplements",
+                "description": "Vitamins, proteins, and supportive supplements for a healthy lifestyle",
+                "features": [
+                    "Medically Certified Products",
+                    "High-Quality Natural Proteins",
+                    "Essential Vitamins & Minerals",
+                    "Safe Fat Burning Supplements",
+                    "Free Consultation on Purchase",
+                    "Quality & Authenticity Guarantee"
+                ],
+                "color": "#2E7D32"
+            }
+        ]
+    },
+    "stats": {
+        "items": [
+            {
+                "value": "500",
+                "label": "Happy Clients",
+                "suffix": "+",
+                "icon": "👥"
+            },
+            {
+                "value": "50",
+                "label": "Specialized Programs",
+                "suffix": "+",
+                "icon": "📋"
+            },
+            {
+                "value": "95",
+                "label": "Success Rate",
+                "suffix": "%",
+                "icon": "⭐"
+            },
+            {
+                "value": "5",
+                "label": "Years of Experience",
+                "suffix": "+",
+                "icon": "🏆"
+            }
+        ]
+    },
+    "offer": {
+        "title": "10% OFF Healthy Meals",
+        "subtitle": "Limited time — Book now and benefit from the offer",
+        "cta": "Book & Save Now",
+        "badge": "Limited Offer 🔥"
+    },
+    "howItWorks": {
+        "title": "How We Work",
+        "subtitle": "Your journey to health in 4 steps",
+        "steps": [
+            {
+                "icon": "📞",
+                "title": "First Consultation",
+                "description": "Contact us and book a free analysis session"
+            },
+            {
+                "icon": "📋",
+                "title": "Analysis & Planning",
+                "description": "Comprehensive body analysis and personal program design"
+            },
+            {
+                "icon": "🌿",
+                "title": "Execution & Follow-up",
+                "description": "Start the program with continuous weekly follow-up"
+            },
+            {
+                "icon": "🏆",
+                "title": "Results & Success",
+                "description": "Achieve your goals and maintain your results"
+            }
+        ]
+    },
+    "testimonials": {
+        "title": "What Our Clients Say",
+        "clients": [
+            {
+                "name": "Fatima Al Hashemi",
+                "role": "Housewife, Dubai",
+                "quote": "After 3 months with Lovers Diet I lost 15 kg and felt a huge difference in my energy and daily activity",
+                "avatar": "FatimaAlHashemi"
+            },
+            {
+                "name": "Ahmed Khalil",
+                "role": "Business Manager, Abu Dhabi",
+                "quote": "The healthy meals are always fresh and delicious and the delivery is always on time, I recommend it to everyone",
+                "avatar": "AhmedKhalil"
+            },
+            {
+                "name": "Maram Salem",
+                "role": "Student, Sharjah",
+                "quote": "The nutrition consultations changed my view of healthy eating and I never imagined it could taste this good",
+                "avatar": "MaramSalem"
+            }
+        ]
+    },
+    "cta": {
+        "title": "Ready to Start Your Health Journey?",
+        "subtitle": "Contact us now and get your first consultation for free",
+        "cta1": "Book Now for Free",
+        "cta2": "📞 WhatsApp: +971 52 903 3110",
+        "trust": [
+            "Free Consultation",
+            "Instant Response",
+            "Guaranteed Results",
+            "Continuous Follow-up"
+        ]
+    },
+    "footer": {
+        "rights": "© 2025 Lovers Diet Center — All Rights Reserved",
+        "tagline": "Together Towards a Better Life"
+    },
+    "mobile": {
+        "home": "Home",
+        "services": "Services",
+        "book": "Book",
+        "sessions": "Sessions",
+        "contact": "Contact",
+        "notifications": {
+            "title": "Notifications",
+            "markAllRead": "Mark All Read",
+            "items": [
+                "🎉 10% OFF our healthy meals — Book now!",
+                "🌿 Tip of the day: Drinking 8 glasses of water helps burn fat",
+                "💪 Your next session appointment — Reminder from Lovers Diet"
+            ]
+        }
+    }
+}
