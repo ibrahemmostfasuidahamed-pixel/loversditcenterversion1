@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, unstable_setRequestLocale } from 'next-intl/server';
 import { Inter, Tajawal } from 'next/font/google';
 import CustomCursor from '@/components/ui/CustomCursor';
+import WhatsAppButton from '@/components/ui/WhatsAppButton';
 import '@/app/globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -31,6 +32,7 @@ export default async function RootLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <CustomCursor />
           {children}
+          <WhatsAppButton />
         </NextIntlClientProvider>
       </body>
     </html>

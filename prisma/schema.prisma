@@ -7,71 +7,132 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
+model AdminUser {
+  id           String         @id @default(cuid())
+  name         String
+  email        String         @unique
+  passwordHash String
+  role         String         @default("editor") // super_admin | editor | viewer
+  isFirstLogin Boolean        @default(true)
+  isActive     Boolean        @default(true)
+  lastLoginAt  DateTime?
+  lastLoginIP  String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  loginHistory LoginHistory[]
+}
+
+model SiteSettings {
   id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  name      String?
-  role      String   @default("admin")
-  createdAt DateTime @default(now())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model LoginHistory {
+  id        String    @id @default(cuid())
+  userId    String
+  ip        String?
+  device    String?
+  createdAt DateTime  @default(now())
+  user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Booking {
-  id                String   @id @default(cuid())
+  id                String    @id @default(cuid())
   name              String
-  age               String
-  gender            String
+  age               String?
+  gender            String?
   phone             String
-  email             String
-  currentWeight     String
-  targetWeight      String
+  email             String?
+  currentWeight     String?
+  targetWeight      String?
+  height            String?
   medicalConditions String?
+  consultationType  String    @default("in_person") // in_person | video
   date              String
   time              String
-  status            String   @default("pending")
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  notes             String?
+  status            String    @default("pending") // pending | confirmed | completed | cancelled
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  price       Float
-  currency    String   @default("AED")
-  category    String
-  description String
-  ingredients String?
-  howToUse    String?
-  image       String?
-  rating      Float    @default(0)
-  reviews     Int      @default(0)
-  inStock     Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String   @id @default(cuid())
+  nameEn           String
+  nameAr           String
+  descriptionEn    String?
+  descriptionAr    String?
+  price            Float
+  comparePrice     Float?
+  currency         String   @default("AED")
+  category         String
+  stock            Int      @default(0)
+  featured         Boolean  @default(false)
+  isActive         Boolean  @default(true)
+  mainImage        String?
+  gallery          String?  // JSON array of image paths
+  videoUrl         String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model Category {
-  id   String @id @default(cuid())
-  name String @unique
-  slug String @unique
+  id      String @id @default(cuid())
+  nameEn  String
+  nameAr  String
+  slug    String @unique
+  icon    String?
+  order   Int    @default(0)
+}
+
+model MediaFile {
+  id         String   @id @default(cuid())
+  filename   String
+  url        String
+  mimeType   String
+  size       Int
+  folder     String   @default("general")
+  uploadedAt DateTime @default(now())
 }
 
 model Message {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  phone     String?
-  message   String
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  name       String
+  email      String?
+  phone      String?
+  message    String
+  read       Boolean  @default(false)
+  archived   Boolean  @default(false)
+  createdAt  DateTime @default(now())
 }
 
 model Testimonial {
-  id        String   @id @default(cuid())
-  name      String
-  role      String
-  text      String
-  rating    Int      @default(5)
-  approved  Boolean  @default(false)
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  nameAr      String
+  nameEn      String
+  reviewAr    String
+  reviewEn    String
+  rating      Int      @default(5)
+  photo       String?
+  weightLost  String?
+  showOnHome  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model Transformation {
+  id          String   @id @default(cuid())
+  beforeImage String
+  afterImage  String
+  patientName String?
+  gender      String?
+  weightBefore Float?
+  weightAfter  Float?
+  duration    Int?     // months
+  storyEn     String?
+  storyAr     String?
+  featured    Boolean  @default(false)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
 }
