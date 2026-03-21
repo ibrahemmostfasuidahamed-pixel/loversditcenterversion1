@@ -1,6 +1,7 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, unstable_setRequestLocale } from 'next-intl/server';
 import { Inter, Tajawal } from 'next/font/google';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import CustomCursor from '@/components/ui/CustomCursor';
 import WhatsAppButton from '@/components/ui/WhatsAppButton';
 import '@/app/globals.css';
@@ -34,6 +35,7 @@ export default async function RootLayout({
           {children}
           <WhatsAppButton />
         </NextIntlClientProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
