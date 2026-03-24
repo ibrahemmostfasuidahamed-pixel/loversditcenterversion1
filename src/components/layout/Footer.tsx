@@ -3,11 +3,22 @@
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { SOCIAL_LINKS_LIST } from '@/lib/constants/social';
+import { SOCIAL_LINKS } from '@/lib/constants/social';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 
 export default function Footer() {
   const t = useTranslations('footer');
+  const settings = useSiteSettings();
   const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
+
+  // Build dynamic social list from DB settings, falling back to constants
+  const socialList = [
+    { ...SOCIAL_LINKS.instagram, url: settings.instagram_url || SOCIAL_LINKS.instagram.url },
+    { ...SOCIAL_LINKS.tiktok,    url: settings.tiktok_url    || SOCIAL_LINKS.tiktok.url    },
+    { ...SOCIAL_LINKS.youtube,   url: settings.youtube_url   || SOCIAL_LINKS.youtube.url   },
+    { ...SOCIAL_LINKS.snapchat,  url: settings.snapchat_url  || SOCIAL_LINKS.snapchat.url  },
+    { ...SOCIAL_LINKS.trendyol,  url: settings.trendyol_url  || SOCIAL_LINKS.trendyol.url  },
+  ];
 
   return (
     <footer className="hidden md:block fixed bottom-0 left-0 w-full z-40 bg-[rgba(10,20,10,0.95)] backdrop-blur-[60px] saturate-200 border-t border-[#2E7D32]/20 shadow-[0_-4px_30px_rgba(0,0,0,0.5)] h-16">
@@ -27,7 +38,7 @@ export default function Footer() {
         {/* CENTER — Social Icons Row */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <div className="bg-white/5 border border-white/10 rounded-2xl px-4 py-2 flex gap-1 h-[52px] items-center shadow-inner">
-            {SOCIAL_LINKS_LIST.map((link) => (
+            {socialList.map((link) => (
               <div 
                 key={link.label} 
                 className="relative group"

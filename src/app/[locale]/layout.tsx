@@ -3,6 +3,7 @@ import { getMessages, unstable_setRequestLocale } from 'next-intl/server';
 import { Inter, Tajawal } from 'next/font/google';
 import CustomCursor from '@/components/ui/CustomCursor';
 import WhatsAppButton from '@/components/ui/WhatsAppButton';
+import { SiteSettingsProvider } from '@/context/SiteSettingsContext';
 import '@/app/globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -30,9 +31,11 @@ export default async function RootLayout({
       </head>
       <body className="bg-[var(--bg)] text-[var(--text)] overflow-x-hidden pt-[env(safe-area-inset-top)]">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <CustomCursor />
-          {children}
-          <WhatsAppButton />
+          <SiteSettingsProvider>
+            <CustomCursor />
+            {children}
+            <WhatsAppButton />
+          </SiteSettingsProvider>
         </NextIntlClientProvider>
       </body>
     </html>

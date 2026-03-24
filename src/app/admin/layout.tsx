@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl">
-      <body style={{ margin: 0, background: '#050507' }}>
+      <body style={{ margin: 0, background: '#050507', cursor: 'auto' }}>
         <SessionWrapper>
           <div className="admin-root admin-layout">
             {/* Sidebar spans full height (rows 1-2) */}

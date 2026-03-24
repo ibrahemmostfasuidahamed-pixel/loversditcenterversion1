@@ -13,9 +13,10 @@ const TABS = [
 
 const SOCIAL_KEYS = [
   { key: 'instagram_url', label: 'Instagram', icon: '📸', placeholder: 'https://instagram.com/...' },
-  { key: 'tiktok_url', label: 'TikTok', icon: '🎵', placeholder: 'https://tiktok.com/...' },
-  { key: 'youtube_url', label: 'YouTube', icon: '▶️', placeholder: 'https://youtube.com/...' },
-  { key: 'snapchat_url', label: 'Snapchat', icon: '👻', placeholder: 'https://snapchat.com/...' },
+  { key: 'tiktok_url',    label: 'TikTok',    icon: '🎵', placeholder: 'https://tiktok.com/...' },
+  { key: 'youtube_url',   label: 'YouTube',   icon: '▶️', placeholder: 'https://youtube.com/...' },
+  { key: 'snapchat_url',  label: 'Snapchat',  icon: '👻', placeholder: 'https://snapchat.com/...' },
+  { key: 'trendyol_url',  label: 'Trendyol',  icon: '🛍️', placeholder: 'https://trendyol.com/...' },
   { key: 'whatsapp_number', label: 'WhatsApp', icon: '💬', placeholder: '+971XXXXXXXXX' },
 ];
 
