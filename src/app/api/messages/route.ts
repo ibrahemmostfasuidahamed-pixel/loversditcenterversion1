@@ -24,6 +24,8 @@ export async function POST(request: Request) {
     }
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     try {
         const messages = await prisma.message.findMany({
