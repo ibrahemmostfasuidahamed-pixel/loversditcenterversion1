@@ -14,6 +14,7 @@ import StatsSection from '@/components/sections/StatsSection';
 import HowItWorksSection from '@/components/sections/HowItWorksSection';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import CTASection from '@/components/sections/CTASection';
+import ProductsSection from '@/components/sections/ProductsSection';
 
 export default function Home() {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -42,6 +43,7 @@ export default function Home() {
         <div className="relative z-10 w-full overflow-hidden">
           <ServicesSection />
           <StatsSection />
+          <ProductsSection />
           <HowItWorksSection />
           <TestimonialsSection />
           <CTASection />
