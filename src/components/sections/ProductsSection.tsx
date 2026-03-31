@@ -23,11 +23,15 @@ type Product = {
 
 // ─── Category Labels ───────────────────────────────────────────────────────────
 const CATEGORY_LABELS: Record<string, { ar: string; en: string; icon: string }> = {
-  vitamins: { ar: 'فيتامينات', en: 'Vitamins', icon: '💊' },
+  meals: { ar: 'وجبات صحية', en: 'Healthy Meals', icon: '🍽️' },
+  consultation: { ar: 'استشارات', en: 'Consultation', icon: '🌿' },
+  fatburn: { ar: 'تكسير دهون', en: 'Fat Burning', icon: '💪' },
+  supplements: { ar: 'مكملات', en: 'Supplements', icon: '💊' },
+  vitamins: { ar: 'فيتامينات', en: 'Vitamins', icon: '🧪' },
   omega: { ar: 'أوميجا', en: 'Omega-3', icon: '🐟' },
   collagen: { ar: 'كولاجين', en: 'Collagen', icon: '✨' },
   minerals: { ar: 'معادن', en: 'Minerals', icon: '⚗️' },
-  protein: { ar: 'بروتين', en: 'Protein', icon: '💪' },
+  protein: { ar: 'بروتين', en: 'Protein', icon: '⚡' },
   general: { ar: 'عام', en: 'General', icon: '🌿' },
 };
 
@@ -163,6 +167,13 @@ export default function ProductsSection() {
   const locale = 'ar'; // change to dynamic locale if needed
 
   useEffect(() => {
+    // Read optional category from URL when standalone page is accessed
+    const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    const catFromUrl = searchParams?.get('category');
+    if (catFromUrl) {
+      setActiveCategory(catFromUrl);
+    }
+
     const fetchProducts = async () => {
       try {
         const res = await fetch('/api/products');

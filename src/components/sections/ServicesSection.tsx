@@ -72,35 +72,40 @@ export default function ServicesSection() {
                 </div>
               </div>
 
-              <div className="h-px w-full bg-white/10 mb-3 md:mb-5" />
+              {/* Horizontal line */}
+              <div className="h-px w-full bg-white/10 mb-3 md:mb-4" />
 
-              {!isMobile && (
-                <p className="text-[var(--muted)] text-sm leading-relaxed mb-6 h-[42px]">
-                  {service.description}
-                </p>
-              )}
+              {/* On mobile, show directly. On desktop, wrap in an expandable hover section */}
+              <div className="flex-1 md:grid transition-all duration-500 ease-in-out md:grid-rows-[0fr] md:group-hover:grid-rows-[1fr] block">
+                <div className="overflow-hidden opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 flex flex-col h-full">
+                  {!isMobile && (
+                    <p className="text-[var(--muted)] text-sm leading-relaxed mb-4">
+                      {service.description}
+                    </p>
+                  )}
 
-              <ul className="flex-1 space-y-1.5 md:space-y-3 mb-4 md:mb-8">
-                {service.features.slice(0, isMobile ? 3 : 6).map((feature, fIdx) => (
-                  <li key={fIdx} className="flex items-center gap-2 md:gap-3 group/item">
-                    <span className="w-[5px] h-[5px] md:w-[6px] md:h-[6px] rounded-full shrink-0" style={{ backgroundColor: service.color }} />
-                    <span className="text-[11px] md:text-sm text-white/80 leading-tight">
-                      {feature}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+                  <ul className="space-y-1.5 md:space-y-3 mb-4 md:mb-6">
+                    {service.features.slice(0, isMobile ? 3 : 6).map((feature, fIdx) => (
+                      <li key={fIdx} className="flex items-center gap-2 md:gap-3 group/item">
+                        <span className="w-[5px] h-[5px] md:w-[6px] md:h-[6px] rounded-full shrink-0" style={{ backgroundColor: service.color }} />
+                        <span className="text-[11px] md:text-sm text-white/80 leading-tight">
+                          {feature}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
 
-              <div className="mt-auto">
-                {idx % 2 === 0 ? (
-                  <Button href="#cta" className="w-full shadow-lg !text-[12px] md:!text-base !py-2 md:!py-3 !min-h-[36px] md:!min-h-[44px] !rounded-xl" style={{ background: `linear-gradient(135deg, ${service.color}, #81C784)` }}>
-                    {t('bookNow')}
-                  </Button>
-                ) : (
-                  <Button href="#cta" variant="glass" className="w-full !text-[12px] md:!text-base !py-2 md:!py-3 !min-h-[36px] md:!min-h-[44px] !rounded-xl">
-                    {t('learnMore')}
-                  </Button>
-                )}
+                  <div className="mt-auto pt-2">
+                    <Button 
+                      href={`/products?category=${service.id}`} 
+                      className={`w-full !text-[12px] md:!text-base !py-2 md:!py-3 !min-h-[36px] md:!min-h-[44px] !rounded-xl ${idx % 2 === 0 ? 'shadow-lg' : ''}`}
+                      style={idx % 2 === 0 ? { background: `linear-gradient(135deg, ${service.color}, #81C784)` } : undefined}
+                      variant={idx % 2 === 0 ? 'primary' : 'glass'}
+                    >
+                      {t('learnMore')}
+                    </Button>
+                  </div>
+                </div>
               </div>
             </GlassCard>
           ))}
