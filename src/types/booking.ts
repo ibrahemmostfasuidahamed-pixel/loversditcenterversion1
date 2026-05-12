@@ -35,6 +35,7 @@ export interface Service {
 }
 
 export interface BookingFormData {
+  gender: string;
   serviceId: string;
   serviceName: string;
   date: string;

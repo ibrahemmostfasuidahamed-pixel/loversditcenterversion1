@@ -34,14 +34,14 @@ export default function OfferBanner() {
 
   const TimeUnit = ({ value, label }: { value: number; label: string }) => (
     <div className="flex flex-col items-center">
-      <div className="w-10 h-10 md:w-14 md:h-14 bg-white/20 backdrop-blur-md rounded-lg md:rounded-xl flex items-center justify-center border border-white/30 shadow-lg relative overflow-hidden">
+      <div className="w-8 h-8 md:w-10 md:h-10 bg-white/20 backdrop-blur-md rounded-md flex items-center justify-center border border-white/30 shadow-lg relative overflow-hidden">
         <AnimatePresence mode="popLayout">
           <motion.span
             key={value}
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -20, opacity: 0 }}
-            className="text-[16px] md:text-2xl font-bold font-inter text-white absolute"
+            className="text-[14px] md:text-lg font-bold font-inter text-white absolute"
           >
             {value.toString().padStart(2, '0')}
           </motion.span>
@@ -52,22 +52,22 @@ export default function OfferBanner() {
   );
 
   return (
-    <section id="offer" className="relative min-h-[100px] md:min-h-[140px] overflow-hidden !py-0 flex items-center z-20">
+    <section id="offer" className="relative min-h-[70px] md:min-h-[90px] overflow-hidden !py-0 flex items-center z-20">
       <div className="absolute inset-0 bg-gradient-to-br from-[#F4A01C] to-[#E65100]">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(45deg, #000 0, #000 2px, transparent 2px, transparent 10px)' }} />
       </div>
       
-      <div className="container relative z-10 py-4 md:py-6 px-4 md:px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
+      <div className="container relative z-10 py-3 md:py-4 px-4 md:px-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4">
           
           <div className="flex flex-col items-center md:items-start text-center md:text-start">
-            <div className="bg-black/20 backdrop-blur text-white text-[10px] md:text-xs font-bold px-2.5 py-1 md:px-3 md:py-1.5 rounded-full mb-2 md:mb-3 inline-flex items-center gap-1 border border-white/10 shadow-inner">
+            <div className="bg-black/20 backdrop-blur text-white text-[9px] md:text-[10px] font-bold px-2 py-0.5 md:px-2.5 md:py-1 rounded-full mb-1.5 md:mb-2 inline-flex items-center gap-1 border border-white/10 shadow-inner">
               {t('badge')}
             </div>
-            <h2 className="text-[18px] md:text-2xl lg:text-3xl font-black text-white mb-1 md:mb-2 drop-shadow-md">
+            <h2 className="text-[16px] md:text-xl lg:text-2xl font-black text-white mb-0.5 md:mb-1 drop-shadow-md">
               {t('title')}
             </h2>
-            <p className="text-white/90 text-[12px] md:text-sm lg:text-base font-medium">
+            <p className="text-white/90 text-[11px] md:text-xs lg:text-sm font-medium">
               {t('subtitle')}
             </p>
           </div>

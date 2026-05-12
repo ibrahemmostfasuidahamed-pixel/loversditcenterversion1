@@ -12,7 +12,7 @@ export default function HeroSection() {
   const t = useTranslations('hero');
 
   return (
-    <section id="home" className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden pt-16">
+    <section id="home" className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20 md:pt-24 pb-12 md:pb-16">
       <HeroCanvas />
       
       <motion.div

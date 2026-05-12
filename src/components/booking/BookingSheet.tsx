@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import type { BookingFormData } from '@/types/booking';
 
 const SERVICES = [
@@ -43,7 +44,7 @@ function generateDates(count: number) {
 function ProgressBar({ step }: { step: number }) {
   return (
     <div className="flex items-center justify-center gap-1 mb-6 px-4">
-      {[1, 2, 3, 4].map((s) => (
+      {[1, 2, 3, 4, 5].map((s) => (
         <div key={s} className="flex items-center gap-1">
           <div
             className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all duration-300 ${
@@ -56,8 +57,8 @@ function ProgressBar({ step }: { step: number }) {
           >
             {s < step ? '✓' : s}
           </div>
-          {s < 4 && (
-            <div className={`w-8 h-[2px] rounded-full transition-colors duration-300 ${s < step ? 'bg-[#2E7D32]' : 'bg-white/10'}`} />
+          {s < 5 && (
+            <div className={`w-6 h-[2px] rounded-full transition-colors duration-300 ${s < step ? 'bg-[#2E7D32]' : 'bg-white/10'}`} />
           )}
         </div>
       ))}
@@ -65,6 +66,112 @@ function ProgressBar({ step }: { step: number }) {
   );
 }
 
+// ─── Step 1: Visual Gender Selector ─────────────────────────────
+function StepGender({ formData, setFormData }: { formData: BookingFormData; setFormData: (f: BookingFormData) => void }) {
+  const options = [
+    {
+      value: 'male',
+      label: 'ذكر',
+      sublabel: 'Male',
+      image: '/male-avatar.png',
+      border: '#3b82f6',
+      glow: 'rgba(59,130,246,0.4)',
+      bgSelected: 'rgba(59,130,246,0.12)',
+    },
+    {
+      value: 'female',
+      label: 'أنثى',
+      sublabel: 'Female',
+      image: '/female-avatar.png',
+      border: '#ec4899',
+      glow: 'rgba(236,72,153,0.4)',
+      bgSelected: 'rgba(236,72,153,0.12)',
+    },
+  ];
+
+  const selectedOpt = options.find((o) => o.value === formData.gender);
+
+  return (
+    <div className="space-y-4">
+      <div className="text-center mb-3">
+        <h3 className="text-[17px] font-bold text-white mb-1">مرحباً بك في لوفرز دايت! 👋</h3>
+        <p className="text-[13px] text-white/50">اختر جنسك لنبدأ رحلتك الصحية</p>
+      </div>
+
+      {/* Hero image — both if no selection, else selected */}
+      <div className="relative flex justify-center">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={formData.gender || 'both'}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.25 }}
+            className="relative overflow-hidden rounded-2xl"
+            style={{
+              width: formData.gender ? '140px' : '220px',
+              height: formData.gender ? '170px' : '180px',
+              boxShadow: selectedOpt ? `0 0 40px ${selectedOpt.glow}` : '0 0 30px rgba(46,125,50,0.3)',
+              border: selectedOpt ? `1.5px solid ${selectedOpt.border}44` : '1.5px solid rgba(46,125,50,0.2)',
+              transition: 'width 0.4s, height 0.4s, box-shadow 0.4s',
+            }}
+          >
+            <Image
+              src={
+                formData.gender === 'male'
+                  ? '/male-avatar.png'
+                  : formData.gender === 'female'
+                  ? '/female-avatar.png'
+                  : '/both-avatars.png'
+              }
+              alt="avatar"
+              fill
+              className="object-cover"
+              style={{ objectPosition: 'center 8%' }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f0a] via-transparent to-transparent" />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Gender cards */}
+      <div className="grid grid-cols-2 gap-3">
+        {options.map((opt) => {
+          const selected = formData.gender === opt.value;
+          return (
+            <motion.button
+              key={opt.value}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => setFormData({ ...formData, gender: opt.value })}
+              className="relative overflow-hidden rounded-[18px] border-[2px] transition-all duration-300 flex flex-col items-center py-4 px-3"
+              style={{
+                background: selected ? opt.bgSelected : 'rgba(255,255,255,0.04)',
+                borderColor: selected ? opt.border : 'rgba(255,255,255,0.1)',
+                boxShadow: selected ? `0 0 20px ${opt.glow}` : 'none',
+              }}
+            >
+              {selected && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center text-white text-[11px] font-bold"
+                  style={{ background: opt.border }}
+                >
+                  ✓
+                </motion.div>
+              )}
+              <span className="text-3xl mb-2">{opt.value === 'male' ? '👨' : '👩'}</span>
+              <p className="text-[16px] font-bold text-white">{opt.label}</p>
+              <p className="text-[11px] text-white/40">{opt.sublabel}</p>
+            </motion.button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Step 2: Service Selection ───────────────────────────────────
 function StepService({ formData, setFormData }: { formData: BookingFormData; setFormData: (f: BookingFormData) => void }) {
   return (
     <div className="space-y-3">
@@ -285,6 +392,7 @@ function StepConfirmation({ formData }: { formData: BookingFormData }) {
         </div>
         <div className="p-4 space-y-3">
           {[
+            { label: 'الجنس', value: formData.gender === 'male' ? '👨 ذكر' : formData.gender === 'female' ? '👩 أنثى' : '-' },
             { label: 'الخدمة', value: `${service?.icon} ${service?.nameAr}` },
             { label: 'التاريخ', value: `${dayNames[dateObj.getDay()]} ${dateObj.getDate()} ${monthNames[dateObj.getMonth()]} ${dateObj.getFullYear()}` },
             { label: 'الوقت', value: `${formData.time} ${parseInt(formData.time) < 12 ? 'صباحاً' : 'مساءً'}` },
@@ -395,6 +503,7 @@ export default function BookingSheet({ onClose }: { onClose: () => void }) {
   const [availableSlots, setAvailableSlots] = useState<string[]>(ALL_TIME_SLOTS);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState<BookingFormData>({
+    gender: '',
     serviceId: '',
     serviceName: '',
     date: '',
@@ -417,15 +526,16 @@ export default function BookingSheet({ onClose }: { onClose: () => void }) {
 
   const canProceed = useMemo(() => {
     switch (step) {
-      case 1: return !!formData.serviceId;
-      case 2: return !!formData.date && !!formData.time;
-      case 3: return formData.fullName.length >= 3 && formData.phone.length >= 7;
-      case 4: return true;
+      case 1: return !!formData.gender;
+      case 2: return !!formData.serviceId;
+      case 3: return !!formData.date && !!formData.time;
+      case 4: return formData.fullName.length >= 3 && formData.phone.length >= 7;
+      case 5: return true;
       default: return false;
     }
   }, [step, formData]);
 
-  const validateStep3 = useCallback(() => {
+  const validateStep4 = useCallback(() => {
     const errs: Record<string, string> = {};
     if (formData.fullName.length < 3) errs.fullName = 'الاسم يجب أن يكون 3 أحرف على الأقل';
     if (formData.phone.length < 7) errs.phone = 'رقم هاتف غير صالح';
@@ -434,9 +544,9 @@ export default function BookingSheet({ onClose }: { onClose: () => void }) {
   }, [formData]);
 
   const handleNext = useCallback(() => {
-    if (step === 3 && !validateStep3()) return;
-    if (step < 4) setStep(step + 1);
-  }, [step, validateStep3]);
+    if (step === 4 && !validateStep4()) return;
+    if (step < 5) setStep(step + 1);
+  }, [step, validateStep4]);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -453,7 +563,7 @@ export default function BookingSheet({ onClose }: { onClose: () => void }) {
         return;
       }
       setBookingRef(data.bookingRef);
-      setStep(5);
+      setStep(6);
     } catch {
       setError('حدث خطأ. تحقق من الاتصال وحاول مرة أخرى');
     } finally {
@@ -501,33 +611,38 @@ export default function BookingSheet({ onClose }: { onClose: () => void }) {
           <div className="w-8" />
         </div>
 
-        {step <= 4 && <ProgressBar step={step} />}
+        {step <= 5 && <ProgressBar step={step} />}
 
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto px-5 pb-32" style={{ WebkitOverflowScrolling: 'touch' }}>
           <AnimatePresence mode="wait">
             {step === 1 && (
               <motion.div key="s1" initial={{ x: 100 * slideDirection, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100 * slideDirection, opacity: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 30 }}>
-                <StepService formData={formData} setFormData={setFormData} />
+                <StepGender formData={formData} setFormData={setFormData} />
               </motion.div>
             )}
             {step === 2 && (
               <motion.div key="s2" initial={{ x: 100 * slideDirection, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100 * slideDirection, opacity: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 30 }}>
-                <StepDateTime formData={formData} setFormData={setFormData} availableSlots={availableSlots} />
+                <StepService formData={formData} setFormData={setFormData} />
               </motion.div>
             )}
             {step === 3 && (
               <motion.div key="s3" initial={{ x: 100 * slideDirection, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100 * slideDirection, opacity: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 30 }}>
-                <StepPersonalInfo formData={formData} setFormData={setFormData} errors={fieldErrors} />
+                <StepDateTime formData={formData} setFormData={setFormData} availableSlots={availableSlots} />
               </motion.div>
             )}
             {step === 4 && (
               <motion.div key="s4" initial={{ x: 100 * slideDirection, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100 * slideDirection, opacity: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 30 }}>
-                <StepConfirmation formData={formData} />
+                <StepPersonalInfo formData={formData} setFormData={setFormData} errors={fieldErrors} />
               </motion.div>
             )}
             {step === 5 && (
-              <motion.div key="s5" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <motion.div key="s5" initial={{ x: 100 * slideDirection, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100 * slideDirection, opacity: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 30 }}>
+                <StepConfirmation formData={formData} />
+              </motion.div>
+            )}
+            {step === 6 && (
+              <motion.div key="s6" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <SuccessScreen bookingRef={bookingRef} onClose={onClose} />
               </motion.div>
             )}
@@ -535,7 +650,7 @@ export default function BookingSheet({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Fixed bottom button area */}
-        {step <= 4 && (
+        {step <= 5 && (
           <div
             className="sticky bottom-0 px-5 pt-4 pb-4"
             style={{
@@ -562,7 +677,7 @@ export default function BookingSheet({ onClose }: { onClose: () => void }) {
 
               <motion.button
                 whileTap={canProceed ? { scale: 0.97 } : undefined}
-                onClick={step === 4 ? handleSubmit : handleNext}
+                onClick={step === 5 ? handleSubmit : handleNext}
                 disabled={!canProceed || loading}
                 className={`flex-1 py-3.5 rounded-xl text-[14px] font-bold transition-all ${
                   canProceed && !loading
@@ -576,7 +691,7 @@ export default function BookingSheet({ onClose }: { onClose: () => void }) {
                     <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     جارٍ الحجز...
                   </span>
-                ) : step === 4 ? (
+                ) : step === 5 ? (
                   '✓ تأكيد الحجز'
                 ) : (
                   'التالي'

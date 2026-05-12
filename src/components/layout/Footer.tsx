@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import Image from 'next/image';
 import { SOCIAL_LINKS } from '@/lib/constants/social';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
 
@@ -37,10 +38,10 @@ export default function Footer() {
 
         {/* CENTER — Social Icons Row */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <div className="bg-white/5 border border-white/10 rounded-2xl px-4 py-2 flex gap-1 h-[52px] items-center shadow-inner">
+          <div className="bg-white/5 border border-white/10 rounded-2xl px-3 py-2 flex gap-2 h-[52px] items-center shadow-inner">
             {socialList.map((link) => (
-              <div 
-                key={link.label} 
+              <div
+                key={link.label}
                 className="relative group"
                 onMouseEnter={() => setHoveredIcon(link.label)}
                 onMouseLeave={() => setHoveredIcon(null)}
@@ -50,27 +51,52 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={link.label}
-                  className="w-[44px] h-[44px] rounded-[10px] flex items-center justify-center text-white/80 transition-all duration-200 relative z-10"
-                  style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(8px)' }}
-                  whileHover={{ 
-                    scale: 1.15, 
-                    y: -2,
-                    backgroundColor: `${link.color}26`, 
-                    boxShadow: `0 0 15px ${link.color}66`,
-                    color: link.color 
+                  className="w-[40px] h-[40px] rounded-[10px] flex items-center justify-center transition-all duration-200 relative z-10 overflow-hidden"
+                  style={{
+                    // Always visible with brand color tint
+                    background: `${link.color}22`,
+                    border: `1.5px solid ${link.color}44`,
+                    color: link.color,
                   }}
-                  whileTap={{ scale: 0.92 }}
+                  whileHover={{
+                    scale: 1.18,
+                    y: -3,
+                    background: `${link.color}44`,
+                    boxShadow: `0 0 20px ${link.color}99, 0 0 40px ${link.color}44`,
+                    border: `1.5px solid ${link.color}99`,
+                  }}
+                  whileTap={{ scale: 0.90 }}
                 >
-                  <svg className="w-[20px] h-[20px] fill-current" viewBox="0 0 24 24">
-                    <path d={link.svgPath} />
-                  </svg>
+                  {/* Trendyol — image logo */}
+                  {link.imagePath ? (
+                    <div className="relative w-[22px] h-[22px]">
+                      <Image
+                        src={link.imagePath}
+                        alt={link.label}
+                        fill
+                        className="object-contain"
+                        sizes="22px"
+                      />
+                    </div>
+                  ) : (
+                    <svg
+                      className="w-[19px] h-[19px]"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d={link.svgPath} />
+                    </svg>
+                  )}
                 </motion.a>
 
-                {/* Active Indicator */}
-                <span 
-                  className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-sm transition-all duration-300 ${
-                    hoveredIcon === link.label ? 'bg-[#F4A01C] w-3 opacity-100' : 'bg-transparent opacity-0'
+                {/* Active glow dot below icon */}
+                <span
+                  className={`absolute -bottom-1 left-1/2 -translate-x-1/2 h-[3px] rounded-full transition-all duration-300 ${
+                    hoveredIcon === link.label
+                      ? 'w-4 opacity-100'
+                      : 'w-1 opacity-40'
                   }`}
+                  style={{ background: link.color }}
                 />
 
                 {/* Tooltip */}
@@ -80,13 +106,26 @@ export default function Footer() {
                       initial={{ opacity: 0, y: 10, scale: 0.9 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 5, scale: 0.9 }}
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                      className="absolute bottom-[66px] left-1/2 -translate-x-1/2 glass px-3 py-1.5 rounded-lg text-xs font-medium text-white whitespace-nowrap z-50 pointer-events-none font-inter"
-                      style={{ padding: '6px 12px' }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      className="absolute bottom-[58px] left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg text-[11px] font-semibold whitespace-nowrap z-50 pointer-events-none font-inter"
+                      style={{
+                        background: `rgba(10,20,10,0.9)`,
+                        backdropFilter: 'blur(12px)',
+                        border: `1px solid ${link.color}44`,
+                        color: link.color,
+                        boxShadow: `0 4px 20px rgba(0,0,0,0.5)`,
+                      }}
                     >
                       {link.tooltip}
                       {/* Tooltip Arrow */}
-                      <div className="absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-[rgba(20,40,20,0.85)] mix-blend-screen" />
+                      <div
+                        className="absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-0 h-0"
+                        style={{
+                          borderLeft: '5px solid transparent',
+                          borderRight: '5px solid transparent',
+                          borderTop: `5px solid ${link.color}44`,
+                        }}
+                      />
                     </motion.div>
                   )}
                 </AnimatePresence>
