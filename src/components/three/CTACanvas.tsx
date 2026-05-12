@@ -1,68 +1,69 @@
-'use client';
-
-import { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
-
-function SpiralParticles() {
-  const pointsRef = useRef<THREE.Points>(null);
-
-  const { positions, colors } = useMemo(() => {
-    const count = 500;
-    const pos = new Float32Array(count * 3);
-    const col = new Float32Array(count * 3);
-    const green = new THREE.Color('#2E7D32');
-    const light = new THREE.Color('#81C784');
-
-    for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 10;
-      const radius = (i / count) * 10;
-      pos[i * 3] = Math.cos(angle) * radius;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 4;
-      pos[i * 3 + 2] = Math.sin(angle) * radius;
-      const c = green.clone().lerp(light, Math.random());
-      col[i * 3] = c.r;
-      col[i * 3 + 1] = c.g;
-      col[i * 3 + 2] = c.b;
-    }
-    return { positions: pos, colors: col };
-  }, []);
-
-  useFrame((state) => {
-    if (!pointsRef.current) return;
-    const posAttr = pointsRef.current.geometry.getAttribute('position');
-    const elapsed = state.clock.elapsedTime;
-
-    for (let i = 0; i < 500; i++) {
-      const angle = (i / 500) * Math.PI * 10 + elapsed * 0.2;
-      const baseRadius = (i / 500) * 10;
-      const pullBack = Math.sin(elapsed * 0.5) * 0.3;
-      const radius = baseRadius * (1 - pullBack * 0.1);
-      posAttr.setX(i, Math.cos(angle) * radius);
-      posAttr.setZ(i, Math.sin(angle) * radius);
-      posAttr.setY(i, posAttr.getY(i) + Math.sin(elapsed + i) * 0.002);
-    }
-    posAttr.needsUpdate = true;
-    pointsRef.current.rotation.y += 0.001;
-  });
-
-  return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
-      </bufferGeometry>
-      <pointsMaterial size={0.12} vertexColors transparent opacity={0.6} sizeAttenuation />
-    </points>
-  );
-}
+'use client'
 
 export default function CTACanvas() {
   return (
-    <div className="canvas-wrapper">
-      <Canvas camera={{ position: [0, 0, 18], fov: 60 }} gl={{ alpha: true, antialias: true }} style={{ background: 'transparent' }}>
-        <SpiralParticles />
-      </Canvas>
+    <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            width: `${60 + i * 40}px`,
+            height: `${60 + i * 40}px`,
+            borderRadius: '50%',
+            border: `1.5px solid rgba(46,125,50,${0.15 - i * 0.015})`,
+            transform: 'translate(-50%, -50%)',
+            animation: `cta-pulse-${i} ${3 + i * 0.5}s ease-in-out infinite alternate`,
+            animationDelay: `${i * 0.2}s`,
+          }}
+        />
+      ))}
+      {Array.from({ length: 30 }).map((_, i) => (
+        <div
+          key={`sparkle-${i}`}
+          style={{
+            position: 'absolute',
+            width: Math.random() * 3 + 1 + 'px',
+            height: Math.random() * 3 + 1 + 'px',
+            borderRadius: '50%',
+            background: i % 3 === 0 ? '#4ade80' : i % 3 === 1 ? '#81C784' : '#F4A01C',
+            opacity: Math.random() * 0.6 + 0.1,
+            left: Math.random() * 100 + '%',
+            top: Math.random() * 100 + '%',
+            animation: `cta-sparkle ${Math.random() * 3 + 2}s ease-in-out infinite alternate`,
+            animationDelay: Math.random() * 3 + 's',
+          }}
+        />
+      ))}
+      <div style={{
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        width: '100px',
+        height: '100px',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(46,125,50,0.12) 0%, transparent 70%)',
+        transform: 'translate(-50%, -50%)',
+        animation: 'cta-glow 3s ease-in-out infinite alternate',
+      }} />
+      <style>{`
+        ${Array.from({ length: 8 }).map((_, i) => `
+          @keyframes cta-pulse-${i} {
+            from { transform: translate(-50%, -50%) scale(0.9); opacity: 0.3; }
+            to   { transform: translate(-50%, -50%) scale(1.15); opacity: 0.6; }
+          }
+        `).join('\n')}
+        @keyframes cta-sparkle {
+          from { transform: translateY(0) scale(0.5); opacity: 0.1; }
+          to   { transform: translateY(-20px) scale(1.2); opacity: 0.7; }
+        }
+        @keyframes cta-glow {
+          from { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
+          to   { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+        }
+      `}</style>
     </div>
-  );
+  )
 }

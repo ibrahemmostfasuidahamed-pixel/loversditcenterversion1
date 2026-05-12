@@ -80,6 +80,21 @@
                     "Quality & Authenticity Guarantee"
                 ],
                 "color": "#2E7D32"
+            },
+            {
+                "id": "training-courses",
+                "icon": "📚",
+                "title": "Training Courses",
+                "description": "Educational courses in nutrition, fitness, and healthy lifestyle",
+                "features": [
+                    "Certified Training Programs",
+                    "Expert Instructors",
+                    "Flexible Scheduling",
+                    "Practical Assignments",
+                    "Certificate Upon Completion",
+                    "Ongoing Support"
+                ],
+                "color": "#1565C0"
             }
         ]
     },

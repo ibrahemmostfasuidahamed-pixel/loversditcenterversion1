@@ -99,16 +99,18 @@ export default function Footer() {
                   style={{ background: link.color }}
                 />
 
-                {/* Tooltip */}
+                {/* Tooltip — appears above icon */}
                 <AnimatePresence>
                   {hoveredIcon === link.label && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                      initial={{ opacity: 0, y: 8, scale: 0.9 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 5, scale: 0.9 }}
+                      exit={{ opacity: 0, y: 4, scale: 0.9 }}
                       transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                      className="absolute bottom-[58px] left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg text-[11px] font-semibold whitespace-nowrap z-50 pointer-events-none font-inter"
+                      className="absolute left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg text-[11px] font-semibold whitespace-nowrap z-50 pointer-events-none font-inter"
                       style={{
+                        bottom: '100%',
+                        marginBottom: '8px',
                         background: `rgba(10,20,10,0.9)`,
                         backdropFilter: 'blur(12px)',
                         border: `1px solid ${link.color}44`,
@@ -119,8 +121,11 @@ export default function Footer() {
                       {link.tooltip}
                       {/* Tooltip Arrow */}
                       <div
-                        className="absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-0 h-0"
+                        className="absolute w-0 h-0"
                         style={{
+                          top: '100%',
+                          left: '50%',
+                          transform: 'translateX(-50%)',
                           borderLeft: '5px solid transparent',
                           borderRight: '5px solid transparent',
                           borderTop: `5px solid ${link.color}44`,

@@ -3,113 +3,128 @@
 import { useTranslations } from 'next-intl';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import GlassCard from '@/components/ui/GlassCard';
-import Button from '@/components/ui/Button';
-import { staggerContainer } from '@/lib/ios-animations';
-import { useIsMobile } from '@/hooks/useIsMobile';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const ServicesCanvas = dynamic(() => import('@/components/three/ServicesCanvas'), { ssr: false });
 
+const SERVICE_ROUTES: Record<string, string> = {
+  meals: '/services/meals',
+  consultation: '/services/consulting',
+  fatburn: '/services/fat-burning',
+  supplements: '/services/supplements',
+  'training-courses': '/services/training-courses',
+};
+
+const SERVICE_IMAGES: Record<string, string> = {
+  meals: '/services/meals.jpg',
+  consultation: '/services/consulting.jpg',
+  fatburn: '/services/fat-burning.jpg',
+  supplements: '/services/supplements.jpg',
+  'training-courses': '/services/training-courses.jpg',
+};
+
+function ServicePill({ id, title }: { id: string; title: string }) {
+  const t = useTranslations('services');
+  const href = SERVICE_ROUTES[id] ?? '#';
+  const imgSrc = SERVICE_IMAGES[id] ?? '';
+
+  return (
+    <Link
+      href={href}
+      className="pill-link"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+        background: '#0d2a18',
+        border: '1px solid #1e4a2a',
+        borderRadius: '50px',
+        overflow: 'hidden',
+        height: '56px',
+        textDecoration: 'none',
+        flexShrink: 0,
+        transition: 'border-color 0.2s',
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#4ade80'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#1e4a2a'; }}
+    >
+      <div style={{ width: '56px', height: '56px', flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
+        <Image
+          src={imgSrc}
+          alt={title}
+          width={56}
+          height={56}
+          style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+          unoptimized
+        />
+      </div>
+      <div style={{ paddingRight: '16px', whiteSpace: 'nowrap' }}>
+        <p style={{ fontSize: '13px', fontWeight: 500, color: '#fff', margin: '0 0 2px', lineHeight: 1.2 }}>{title}</p>
+        <p style={{ fontSize: '11px', color: '#4ade80', margin: 0, lineHeight: 1.2 }}>
+          {t('bookNow')} →
+        </p>
+      </div>
+    </Link>
+  );
+}
+
 export default function ServicesSection() {
   const t = useTranslations('services');
-  const isMobile = useIsMobile();
 
-  const items = Array.from({ length: 4 }).map((_, i) => ({
+  const items = Array.from({ length: 5 }).map((_, i) => ({
     id: t(`items.${i}.id`),
     title: t(`items.${i}.title`),
-    description: t(`items.${i}.description`),
-    icon: t(`items.${i}.icon`),
-    color: t(`items.${i}.color`),
-    features: Array.from({ length: 6 }).map((_, j) => t(`items.${i}.features.${j}`)),
   }));
 
   return (
-    <section id="services" className="relative min-h-screen py-8 md:py-20">
+    <section id="services" className="relative py-8 md:py-12 overflow-hidden">
       <ServicesCanvas />
-      
+
       <div className="container relative z-10 px-4 md:px-0 max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
-          className="text-center mb-8 md:mb-16"
+          className="text-center mb-6 md:mb-10"
         >
           <h2 className="text-[24px] md:text-4xl lg:text-5xl font-black gradient-text inline-block">{t('title')}</h2>
           <p className="text-[13px] md:text-base lg:text-lg text-[var(--muted)] max-w-2xl mx-auto mt-2">{t('subtitle')}</p>
         </motion.div>
+      </div>
 
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          className="grid grid-cols-2 md:grid-cols-2 gap-2.5 md:gap-6"
-        >
-          {items.map((service, idx) => (
-            <GlassCard key={service.id} index={idx} className="group relative overflow-hidden flex flex-col h-full !p-4 md:!p-6 lg:!p-8 !rounded-2xl">
-              {/* Colored Glow */}
-              <div
-                className="absolute top-0 right-0 w-20 md:w-32 h-20 md:h-32 rounded-full blur-[60px] md:blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-500"
-                style={{ backgroundColor: service.color }}
-              />
+      {/* ── Auto-scrolling carousel ── */}
+      <div
+        style={{
+          overflow: 'hidden',
+          width: '100%',
+          position: 'relative',
+          zIndex: 10,
+          paddingTop: '8px',
+          paddingBottom: '8px',
+        }}
+      >
+        <style>{`
+          @keyframes scroll-left {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .track {
+            display: flex;
+            gap: 12px;
+            padding: 0 20px;
+            animation: scroll-left 40s linear infinite;
+            width: max-content;
+          }
+          .track:hover { animation-play-state: paused; }
+          .pill-link:hover { border-color: #4ade80 !important; }
+        `}</style>
 
-              <div className="flex gap-2 md:gap-4 items-start mb-3 md:mb-6 pt-1 md:pt-2">
-                <div
-                  className="w-9 h-9 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center text-xl md:text-3xl shadow-inner shrink-0"
-                  style={{
-                    backgroundColor: 'rgba(255,255,255,0.05)',
-                    border: `1px solid ${service.color}40`,
-                    boxShadow: `inset 0 0 20px ${service.color}20`,
-                  }}
-                >
-                  <span className="drop-shadow-md">{service.icon}</span>
-                </div>
-                <div className="min-w-0">
-                  <h3 className="text-[13px] md:text-xl font-bold text-white mb-0.5 md:mb-1 group-hover:text-[var(--primary-light)] transition-colors line-clamp-2">{service.title}</h3>
-                  <a href="#cta" className="text-[10px] md:text-sm font-medium hover:underline flex items-center gap-1" style={{ color: service.color }}>
-                    {t('bookNow')} <span className="text-[8px] md:text-xs rtl:hidden">→</span><span className="text-[8px] md:text-xs ltr:hidden">←</span>
-                  </a>
-                </div>
-              </div>
-
-              {/* Horizontal line */}
-              <div className="h-px w-full bg-white/10 mb-3 md:mb-4" />
-
-              {/* On mobile, show directly. On desktop, wrap in an expandable hover section */}
-              <div className="flex-1 md:grid transition-all duration-500 ease-in-out md:grid-rows-[0fr] md:group-hover:grid-rows-[1fr] block">
-                <div className="overflow-hidden opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 flex flex-col h-full">
-                  {!isMobile && (
-                    <p className="text-[var(--muted)] text-sm leading-relaxed mb-4">
-                      {service.description}
-                    </p>
-                  )}
-
-                  <ul className="space-y-1.5 md:space-y-3 mb-4 md:mb-6">
-                    {service.features.slice(0, isMobile ? 3 : 6).map((feature, fIdx) => (
-                      <li key={fIdx} className="flex items-center gap-2 md:gap-3 group/item">
-                        <span className="w-[5px] h-[5px] md:w-[6px] md:h-[6px] rounded-full shrink-0" style={{ backgroundColor: service.color }} />
-                        <span className="text-[11px] md:text-sm text-white/80 leading-tight">
-                          {feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-auto pt-2">
-                    <Button 
-                      href={`/products?category=${service.id}`} 
-                      className={`w-full !text-[12px] md:!text-base !py-2 md:!py-3 !min-h-[36px] md:!min-h-[44px] !rounded-xl ${idx % 2 === 0 ? 'shadow-lg' : ''}`}
-                      style={idx % 2 === 0 ? { background: `linear-gradient(135deg, ${service.color}, #81C784)` } : undefined}
-                      variant={idx % 2 === 0 ? 'primary' : 'glass'}
-                    >
-                      {t('learnMore')}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </GlassCard>
+        <div className="track">
+          {[...items, ...items].map((item, idx) => (
+            <ServicePill key={`${item.id}-${idx}`} id={item.id} title={item.title} />
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
