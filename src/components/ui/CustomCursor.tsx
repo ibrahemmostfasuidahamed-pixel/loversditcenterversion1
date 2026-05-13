@@ -1,42 +1,95 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react'
+import { motion, useMotionValue, useSpring } from 'framer-motion'
 
 export default function CustomCursor() {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const [hovering, setHovering] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [isTouch, setIsTouch] = useState(true);
+  const [hovering, setHovering] = useState(false)
+  const [isTouch, setIsTouch] = useState(true)
+
+  const cursorX = useMotionValue(-100)
+  const cursorY = useMotionValue(-100)
+
+  const springX = useSpring(cursorX, { stiffness: 300, damping: 25, mass: 0.5 })
+  const springY = useSpring(cursorY, { stiffness: 300, damping: 25, mass: 0.5 })
+
+  const dotX = useSpring(cursorX, { stiffness: 600, damping: 35, mass: 0.2 })
+  const dotY = useSpring(cursorY, { stiffness: 600, damping: 35, mass: 0.2 })
 
   useEffect(() => {
-    const touch = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches;
-    setIsTouch(touch);
-    if (touch) return;
+    const touch = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches
+    setIsTouch(touch)
+    if (touch) return
 
-    const onMove = (e: MouseEvent) => { setPos({ x: e.clientX, y: e.clientY }); setVisible(true); };
+    const onMove = (e: MouseEvent) => {
+      cursorX.set(e.clientX)
+      cursorY.set(e.clientY)
+    }
+
     const onOver = (e: MouseEvent) => {
-      const t = e.target as HTMLElement;
-      setHovering(t.tagName === 'A' || t.tagName === 'BUTTON' || !!t.closest('a') || !!t.closest('button'));
-    };
-    const onLeave = () => setVisible(false);
+      const t = e.target as HTMLElement
+      const isClickable = t.tagName === 'A' || t.tagName === 'BUTTON' || !!t.closest('a') || !!t.closest('button') || !!t.closest('input') || !!t.closest('[role="button"]')
+      setHovering(isClickable)
+    }
 
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseover', onOver);
-    document.addEventListener('mouseleave', onLeave);
-    return () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseover', onOver); document.removeEventListener('mouseleave', onLeave); };
-  }, []);
+    const onLeave = () => {
+      cursorX.set(-100)
+      cursorY.set(-100)
+    }
 
-  if (isTouch) return null;
+    document.addEventListener('mousemove', onMove)
+    document.addEventListener('mouseover', onOver)
+    document.addEventListener('mouseleave', onLeave)
+    return () => {
+      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseover', onOver)
+      document.removeEventListener('mouseleave', onLeave)
+    }
+  }, [])
+
+  if (isTouch) return null
+
+  const blue = '#4A6CF7'
+  const ringSize = hovering ? 56 : 40
 
   return (
-    <>
-      <motion.div className="cursor-dot" style={{ position: 'fixed', top: 0, left: 0, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#2E7D32', pointerEvents: 'none', zIndex: 99999, opacity: visible ? (hovering ? 0 : 1) : 0 }}
-        animate={{ x: pos.x - 4, y: pos.y - 4 }}
-        transition={{ type: 'spring', stiffness: 800, damping: 35, mass: 0.3 }} />
-      <motion.div className="cursor-ring" style={{ position: 'fixed', top: 0, left: 0, borderRadius: '50%', border: hovering ? 'none' : '2px solid #2E7D32', backgroundColor: hovering ? 'rgba(46,125,50,0.15)' : 'transparent', pointerEvents: 'none', zIndex: 99998, opacity: visible ? 1 : 0 }}
-        animate={{ width: hovering ? 60 : 40, height: hovering ? 60 : 40, x: pos.x - (hovering ? 30 : 20), y: pos.y - (hovering ? 30 : 20) }}
-        transition={{ type: 'spring', stiffness: 400, damping: 28, mass: 0.5 }} />
-    </>
-  );
+    <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 99999, overflow: 'hidden' }}>
+      {/* Outer ring */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          left: 0, top: 0,
+          width: ringSize,
+          height: ringSize,
+          borderRadius: '50%',
+          border: hovering ? `1.5px solid ${blue}50` : `1.5px solid ${blue}60`,
+          background: hovering ? `${blue}15` : 'transparent',
+          x: springX,
+          y: springY,
+          marginLeft: -ringSize / 2,
+          marginTop: -ringSize / 2,
+          transition: 'width 0.2s, height 0.2s, background 0.2s, border 0.2s',
+        }}
+      />
+
+      {/* Inner dot */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          left: 0, top: 0,
+          width: 8,
+          height: 8,
+          borderRadius: '50%',
+          background: blue,
+          boxShadow: `0 0 10px ${blue}80, 0 0 20px ${blue}30`,
+          x: dotX,
+          y: dotY,
+          marginLeft: -4,
+          marginTop: -4,
+          scale: hovering ? 1.5 : 1,
+          transition: 'scale 0.2s',
+        }}
+      />
+    </div>
+  )
 }

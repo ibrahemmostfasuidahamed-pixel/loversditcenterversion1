@@ -212,5 +212,41 @@
                 "💪 موعد جلستك القادمة — تذكير من Lovers Diet"
             ]
         }
+    },
+    "consultation": {
+        "backToHome": "← العودة للرئيسية",
+        "step1Title": "ما هو جنسك؟",
+        "step1Description": "هذا يساعدنا على تخصيص خطة التغذية الخاصة بك",
+        "male": "ذكر",
+        "female": "أنثى",
+        "next": "التالي",
+        "nameStepTitle": "ما هو اسمك الكامل؟",
+        "nameStepDescription": "الرجاء إدخال الاسم ثلاثي (الأول، الأوسط، الأخير)",
+        "namePlaceholder": "أدخل اسمك الكامل",
+        "alreadyUser": "لديك حساب بالفعل؟",
+        "continueExisting": "تسجيل الدخول بحسابك الحالي"
+    },
+    "meals": {
+        "title": "الوجبات الصحية المتوازنة",
+        "subtitle": "وجبات مصممة من أخصائيي التغذية خصيصاً لتحقيق أهدافك",
+        "browseCTA": "تصفح المنتجات",
+        "bookMealCTA": "احجز وجبتك الآن",
+        "categories": {
+            "breakfast": "الإفطار",
+            "lunch": "الغداء",
+            "dinner": "العشاء",
+            "snacks": "الوجبات الخفيفة",
+            "desserts": "الحلويات الصحية"
+        },
+        "nutrition": {
+            "calories": "سعرة",
+            "protein": "بروتين",
+            "carbs": "كربوهيدرات",
+            "fats": "دهون"
+        },
+        "bookNow": "احجز الآن",
+        "ctaTitle": "مستعد لبدء رحلتك الصحية؟",
+        "ctaButton": "احجز استشارتك الآن",
+        "whatsappText": "تحدث معنا عبر واتساب"
     }
 }

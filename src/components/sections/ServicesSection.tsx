@@ -9,8 +9,8 @@ import Link from 'next/link';
 const ServicesCanvas = dynamic(() => import('@/components/three/ServicesCanvas'), { ssr: false });
 
 const SERVICE_ROUTES: Record<string, string> = {
-  meals: '/services/meals',
-  consultation: '/services/consulting',
+  meals: '/meals',
+  consultation: '/onboarding/gender',
   fatburn: '/services/fat-burning',
   supplements: '/services/supplements',
   'training-courses': '/services/training-courses',
@@ -94,7 +94,7 @@ export default function ServicesSection() {
       </div>
 
       {/* ── Auto-scrolling carousel ── */}
-      <div
+      <div dir="ltr"
         style={{
           overflow: 'hidden',
           width: '100%',
@@ -113,7 +113,7 @@ export default function ServicesSection() {
             display: flex;
             gap: 12px;
             padding: 0 20px;
-            animation: scroll-left 40s linear infinite;
+            animation: scroll-left 60s linear infinite;
             width: max-content;
           }
           .track:hover { animation-play-state: paused; }
@@ -121,7 +121,7 @@ export default function ServicesSection() {
         `}</style>
 
         <div className="track">
-          {[...items, ...items].map((item, idx) => (
+          {[...items, ...items, ...items, ...items].map((item, idx) => (
             <ServicePill key={`${item.id}-${idx}`} id={item.id} title={item.title} />
           ))}
         </div>

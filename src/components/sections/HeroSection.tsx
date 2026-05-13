@@ -45,7 +45,7 @@ export default function HeroSection() {
         </motion.div>
 
         <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto">
-          <Button href="#cta" variant="primary" className="w-full sm:w-auto glow-green group !text-[14px] md:!text-base">
+          <Button href="/onboarding/gender" variant="primary" className="w-full sm:w-auto glow-green group !text-[14px] md:!text-base">
             {t('cta1')}
             <motion.span animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }} className="rtl:rotate-180 inline-block">
               →
@@ -55,24 +55,6 @@ export default function HeroSection() {
             {t('cta2')}
           </Button>
         </motion.div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 1 }}
-        className="absolute bottom-20 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center z-10"
-      >
-        <div className="w-[26px] h-[42px] md:w-[30px] md:h-[50px] rounded-full border-2 border-[var(--muted)] flex justify-center p-2 mb-2">
-          <motion.div
-            className="w-1 h-2.5 md:w-1.5 md:h-3 bg-[#81C784] rounded-full"
-            animate={{ y: [0, 12, 0], opacity: [1, 0.3, 1] }}
-            transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
-          />
-        </div>
-        <motion.span className="text-xl md:text-2xl animate-float" initial={{ opacity: 0.5 }}>
-          🌿
-        </motion.span>
       </motion.div>
     </section>
   );

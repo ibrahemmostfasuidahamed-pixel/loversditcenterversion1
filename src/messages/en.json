@@ -212,5 +212,41 @@
                 "💪 Your next session appointment — Reminder from Lovers Diet"
             ]
         }
+    },
+    "consultation": {
+        "backToHome": "← Back to Home",
+        "step1Title": "What's your gender?",
+        "step1Description": "This helps us personalise your nutrition plan",
+        "male": "Male",
+        "female": "Female",
+        "next": "Next",
+        "nameStepTitle": "What's your full name?",
+        "nameStepDescription": "Please enter your full name (first, middle, last)",
+        "namePlaceholder": "Enter your full name",
+        "alreadyUser": "Already our user?",
+        "continueExisting": "Continue with your existing account"
+    },
+    "meals": {
+        "title": "Balanced Healthy Meals",
+        "subtitle": "Nutritionist-designed meals tailored to your goals",
+        "browseCTA": "Browse Products",
+        "bookMealCTA": "Book Your Meal Now",
+        "categories": {
+            "breakfast": "Breakfast",
+            "lunch": "Lunch",
+            "dinner": "Dinner",
+            "snacks": "Snacks",
+            "desserts": "Healthy Desserts"
+        },
+        "nutrition": {
+            "calories": "cal",
+            "protein": "protein",
+            "carbs": "carbs",
+            "fats": "fat"
+        },
+        "bookNow": "Book Now",
+        "ctaTitle": "Ready to start your healthy journey?",
+        "ctaButton": "Book Your Consultation Now",
+        "whatsappText": "Chat with us on WhatsApp"
     }
 }
