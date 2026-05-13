@@ -248,5 +248,24 @@
         "ctaTitle": "Ready to start your healthy journey?",
         "ctaButton": "Book Your Consultation Now",
         "whatsappText": "Chat with us on WhatsApp"
+    },
+    "supplements": {
+        "title": "Nutritional Products & Supplements",
+        "subtitle": "Medically certified vitamins, proteins, and supportive supplements for a healthy lifestyle",
+        "browseCTA": "Browse Products",
+        "bookConsultationCTA": "Book Your Consultation Now",
+        "categories": {
+            "vitamins": "Vitamins & Minerals",
+            "proteins": "Protein & Amino Acids",
+            "fat-burners": "Fat Burning Supplements",
+            "wellness": "Health & Wellness",
+            "sports": "Sports Nutrition"
+        },
+        "bookNow": "Book Now",
+        "servings": "servings",
+        "ctaTitle": "Ready to start your healthy journey?",
+        "ctaButton": "Book Your Consultation Now",
+        "whatsappText": "Chat with us on WhatsApp",
+        "certified": "Medically Certified"
     }
 }

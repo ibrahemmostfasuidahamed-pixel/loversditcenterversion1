@@ -12,7 +12,7 @@ const SERVICE_ROUTES: Record<string, string> = {
   meals: '/meals',
   consultation: '/onboarding/gender',
   fatburn: '/services/fat-burning',
-  supplements: '/services/supplements',
+  supplements: '/supplements',
   'training-courses': '/services/training-courses',
 };
 
