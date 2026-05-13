@@ -1,232 +1,322 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useTranslations } from 'next-intl'
+import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useRouter } from 'next/navigation'
+import { Outfit } from 'next/font/google'
+import localFont from 'next/font/local'
 
-interface Meal {
-  id: number
-  name: { en: string; ar: string }
-  description: { en: string; ar: string }
-  category: string
-  image: string
-  nutrition: { calories: number; protein: number; carbs: number; fats: number }
-}
+const outfit = Outfit({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700', '800'], variable: '--font-outfit' })
+const shorooq = localFont({ src: '../../../../public/fonts/Shorooq_N1.ttf', variable: '--font-shorooq' })
 
-const mealsData: Meal[] = [
-  { id: 1, name: { en: 'Grilled Chicken Salad', ar: 'سلطة الدجاج المشوي' }, description: { en: 'Fresh mixed greens with grilled chicken breast', ar: 'خضار مشكلة طازجة مع صدر دجاج مشوي' }, category: 'lunch', image: '/meals/meal-1.jpg', nutrition: { calories: 420, protein: 35, carbs: 20, fats: 15 } },
-  { id: 2, name: { en: 'Oatmeal with Berries', ar: 'شوفان مع التوت' }, description: { en: 'Organic oats topped with fresh seasonal berries', ar: 'شوفان عضوي مع توت طازج موسمي' }, category: 'breakfast', image: '/meals/meal-2.jpg', nutrition: { calories: 320, protein: 12, carbs: 45, fats: 8 } },
-  { id: 3, name: { en: 'Grilled Salmon Fillet', ar: 'فيليه سلمون مشوي' }, description: { en: 'Atlantic salmon with roasted vegetables', ar: 'سلمون أطلنطي مع خضار مشوية' }, category: 'dinner', image: '/meals/meal-3.jpg', nutrition: { calories: 480, protein: 40, carbs: 18, fats: 22 } },
-  { id: 4, name: { en: 'Green Smoothie Bowl', ar: 'وعاء سموثي أخضر' }, description: { en: 'Blended spinach, banana, and almond milk', ar: 'سبانخ مهروسة مع موز وحليب لوز' }, category: 'breakfast', image: '/meals/meal-4.jpg', nutrition: { calories: 260, protein: 8, carbs: 40, fats: 6 } },
-  { id: 5, name: { en: 'Quinoa Buddha Bowl', ar: 'وعاء الكينوا' }, description: { en: 'Quinoa, roasted chickpeas, avocado, tahini', ar: 'كينوا مع حمص مشوي وأفوكادو وطحينة' }, category: 'lunch', image: '/meals/meal-5.jpg', nutrition: { calories: 510, protein: 18, carbs: 55, fats: 22 } },
-  { id: 6, name: { en: 'Almond Energy Balls', ar: 'كرات الطاقة باللوز' }, description: { en: 'Dates, almonds, coconut, and cacao', ar: 'تمر مع لوز وجوز الهند وكاكاو' }, category: 'snacks', image: '/meals/meal-6.jpg', nutrition: { calories: 180, protein: 6, carbs: 22, fats: 10 } },
-  { id: 7, name: { en: 'Grilled Chicken Wrap', ar: 'لفة الدجاج المشوي' }, description: { en: 'Whole wheat wrap with grilled chicken', ar: 'لفة قمح كامل مع دجاج مشوي' }, category: 'lunch', image: '/meals/meal-7.jpg', nutrition: { calories: 390, protein: 30, carbs: 35, fats: 12 } },
-  { id: 8, name: { en: 'Berry Protein Pancakes', ar: 'بان كيك بروتين بالتوت' }, description: { en: 'Oat-based pancakes with protein powder', ar: 'بان كيك بالشوفان وبروتين مع توت' }, category: 'breakfast', image: '/meals/meal-8.jpg', nutrition: { calories: 350, protein: 25, carbs: 38, fats: 9 } },
-  { id: 9, name: { en: 'Herb-Baked Chicken', ar: 'دجاج مخبوز بالأعشاب' }, description: { en: 'Oven-baked chicken with rosemary and thyme', ar: 'دجاج مخبوز بالفرن مع إكليل الجبل والزعتر' }, category: 'dinner', image: '/meals/meal-9.jpg', nutrition: { calories: 440, protein: 38, carbs: 15, fats: 18 } },
-  { id: 10, name: { en: 'Hummus & Veggie Sticks', ar: 'حمص وخضار طازجة' }, description: { en: 'Creamy hummus with fresh vegetable sticks', ar: 'حمص كريمي مع أصابع خضار طازجة' }, category: 'snacks', image: '/meals/meal-10.jpg', nutrition: { calories: 190, protein: 8, carbs: 20, fats: 9 } },
-  { id: 11, name: { en: 'Grilled Vegetable Panini', ar: 'بانيني خضار مشوي' }, description: { en: 'Pressed panini with grilled vegetables', ar: 'بانيني مضغوط مع خضار مشوية' }, category: 'lunch', image: '/meals/meal-11.jpg', nutrition: { calories: 340, protein: 14, carbs: 42, fats: 12 } },
-  { id: 12, name: { en: 'Chia Pudding', ar: 'بودنغ الشيا' }, description: { en: 'Coconut chia pudding with mango', ar: 'بودنغ شيا بجوز الهند مع مانجو' }, category: 'desserts', image: '/meals/meal-12.jpg', nutrition: { calories: 220, protein: 6, carbs: 28, fats: 11 } },
-  { id: 13, name: { en: 'Lean Beef Stir-Fry', ar: 'لحم بقري مقلي' }, description: { en: 'Lean beef strips with broccoli and peppers', ar: 'شرائح لحم بقري مع بروكلي وفلفل' }, category: 'dinner', image: '/meals/meal-13.jpg', nutrition: { calories: 460, protein: 42, carbs: 22, fats: 16 } },
-  { id: 14, name: { en: 'Avocado Toast', ar: 'توست الأفوكادو' }, description: { en: 'Sourdough toast with avocado and seeds', ar: 'توست عجين مخمر مع أفوكادو وبذور' }, category: 'breakfast', image: '/meals/meal-14.jpg', nutrition: { calories: 290, protein: 10, carbs: 30, fats: 14 } },
-  { id: 15, name: { en: 'Dark Chocolate Mousse', ar: 'موس الشوكولاتة الداكنة' }, description: { en: 'Avocado-based chocolate mousse', ar: 'موس شوكولاتة بالأفوكادو' }, category: 'desserts', image: '/meals/meal-15.jpg', nutrition: { calories: 200, protein: 4, carbs: 18, fats: 14 } },
-  { id: 16, name: { en: 'Trail Mix Bites', ar: 'مكسرات مشكلة' }, description: { en: 'Mixed nuts, seeds, and dried fruits', ar: 'مكسرات وبذور وفواكه مجففة' }, category: 'snacks', image: '/meals/meal-16.jpg', nutrition: { calories: 160, protein: 5, carbs: 14, fats: 11 } },
+const menuItems = [
+  { name: 'Healthy Beef Burger', price: '65 EGP', cat: 'Burgers', desc: 'Grilled chicken patty with whole wheat bun, fresh lettuce and special sauce', image: '/meals/meal-5.jpg' },
+  { name: 'Caesar Salad', price: '45 EGP', cat: 'Salads', desc: 'Fresh romaine lettuce with grilled chicken breast, parmesan and croutons', image: '/meals/meal-1.jpg' },
+  { name: 'Grilled Chicken', price: '75 EGP', cat: 'Grills', desc: 'Marinated chicken breast served with roasted seasonal vegetables', image: '/meals/meal-9.jpg' },
+  { name: 'Fresh Juice', price: '25 EGP', cat: 'Drinks', desc: '100% natural orange and carrot juice freshly squeezed daily', image: '/meals/meal-4.jpg' },
+  { name: 'Oatmeal Bowl', price: '35 EGP', cat: 'Breakfast', desc: 'Organic oats topped with fresh berries, honey and almonds', image: '/meals/meal-2.jpg' },
+  { name: 'Protein Pancakes', price: '55 EGP', cat: 'Breakfast', desc: 'Fluffy oat-based protein pancakes with sugar-free syrup', image: '/meals/meal-8.jpg' },
 ]
 
-const categories = ['all', 'breakfast', 'lunch', 'dinner', 'snacks', 'desserts']
+const testimonials = [
+  { name: 'Sarah Ahmed', role: 'Client since 2024', quote: 'Best diet meals I have tried! Lost 5kg in a month with amazing taste.', avatar: 'bg-rose-300' },
+  { name: 'Mohamed Ali', role: 'Pro Athlete', quote: 'Delivery is always on time and the food is fresh and well-organized.', avatar: 'bg-sky-300' },
+  { name: 'Noor Hassan', role: 'Fitness Coach', quote: 'Great menu variety at reasonable prices. My daily meals are from Lovers Diet.', avatar: 'bg-emerald-300' },
+]
+
+const sectionVariant = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' as const } },
+}
 
 export default function MealsPage() {
-  const t = useTranslations('meals')
-  const router = useRouter()
-  const [activeCat, setActiveCat] = useState('all')
+  const pathname = usePathname()
+  const [scrolled, setScrolled] = useState(false)
+  const [selectedMeal, setSelectedMeal] = useState<typeof menuItems[0] | null>(null)
+  const statsRef = useRef<HTMLDivElement>(null)
+  const [counts, setCounts] = useState({ c1: 0, c2: 0 })
 
-  const filtered = activeCat === 'all' ? mealsData : mealsData.filter((m) => m.category === activeCat)
+  const isAr = pathname?.startsWith('/ar')
+  const bodyFont = isAr ? 'var(--font-shorooq)' : 'var(--font-outfit)'
+  const otherLocale = isAr ? 'en' : 'ar'
+  const switchPath = pathname?.startsWith('/ar') || pathname?.startsWith('/en')
+    ? pathname.replace(/^\/(ar|en)/, `/${otherLocale}`)
+    : `/${otherLocale}/meals`
 
-  const categoryNames: Record<string, string> = {
-    all: 'All',
-    breakfast: t('categories.breakfast'),
-    lunch: t('categories.lunch'),
-    dinner: t('categories.dinner'),
-    snacks: t('categories.snacks'),
-    desserts: t('categories.desserts'),
-  }
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 50)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    const el = statsRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        const dur = 2000; const start = performance.now()
+        const targets = [250, 15]
+        const anim = (now: number) => {
+          const t = Math.min((now - start) / dur, 1)
+          const e = 1 - Math.pow(1 - t, 3)
+          setCounts({ c1: Math.floor(e * targets[0]), c2: Math.floor(e * targets[1]) })
+          if (t < 1) requestAnimationFrame(anim)
+        }
+        requestAnimationFrame(anim)
+        obs.disconnect()
+      }
+    }, { threshold: 0.3 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
 
   return (
-    <div className="min-h-screen bg-[#060f0a] relative overflow-hidden">
-
-      {/* 3D Background */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 -left-32 w-[400px] h-[400px] bg-green-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 -right-32 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/3 right-1/4 w-20 h-20 text-3xl animate-bounce" style={{ animationDuration: '8s' }}>🥗</div>
-        <div className="absolute bottom-1/4 left-1/5 w-16 h-16 text-2xl animate-bounce" style={{ animationDuration: '10s', animationDelay: '2s' }}>🥑</div>
-        <div className="absolute top-1/2 right-1/5 w-14 h-14 text-2xl animate-bounce" style={{ animationDuration: '7s', animationDelay: '4s' }}>🥦</div>
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:24px_24px]" />
-      </div>
+    <div className={`${outfit.variable} ${shorooq.variable} min-h-screen bg-[#dff0a0]`} style={{ fontFamily: bodyFont }} dir={isAr ? 'rtl' : 'ltr'} lang={isAr ? 'ar' : 'en'}>
 
       <style>{`
-        @keyframes fade-up { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-        .animate-fade-up { animation: fade-up 0.6s ease-out forwards; }
+        @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .track { display: flex; gap: 20px; animation: scroll-left 30s linear infinite; width: max-content; }
+        .track:hover { animation-play-state: paused; }
+        [dir="rtl"] .track { animation: scroll-left 30s linear infinite; }
+
+        @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-item { opacity: 0; animation: fade-up 0.6s ease-out forwards; }
+        .fade-d1 { animation-delay: 0ms; } .fade-d2 { animation-delay: 150ms; }
+        .fade-d3 { animation-delay: 300ms; } .fade-d4 { animation-delay: 450ms; }
+
+        .section-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent); margin: 0; }
+
+        [dir="rtl"] .hero-title { font-size: clamp(60px,10vw,110px) !important; }
+        [dir="rtl"] .section-heading { font-size: clamp(36px,6vw,52px) !important; }
+        [dir="rtl"] .stat-number { font-size: 48px !important; }
+        [dir="rtl"] .stat-label { font-size: 14px !important; }
+        [dir="rtl"] .nav-brand { font-size: 26px !important; }
+        [dir="rtl"] .nav-link { font-size: 17px !important; }
+        [dir="rtl"] .card-title { font-size: 18px !important; }
+        [dir="rtl"] .card-price { font-size: 22px !important; }
+        [dir="rtl"] .modal-title { font-size: 26px !important; }
+        [dir="rtl"] .cta-heading { font-size: clamp(44px,7vw,60px) !important; }
       `}</style>
 
-      {/* Back Button - Desktop */}
-      <Link href="/" className="hidden md:flex fixed top-6 left-6 rtl:left-auto rtl:right-6 items-center gap-2 text-green-400 hover:text-green-300 transition-colors z-50 group">
-        <svg className="w-5 h-5 transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        <span className="text-sm font-medium">Back to Home</span>
-      </Link>
-
-      {/* Back Button - Mobile */}
-      <Link href="/" className="md:hidden fixed top-4 left-4 rtl:left-auto rtl:right-4 z-[60] bg-green-900/60 backdrop-blur-sm p-2.5 rounded-full hover:bg-green-800 transition-colors shadow-lg">
-        <svg className="w-5 h-5 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-      </Link>
-
-      {/* HERO */}
-      <section className="relative pt-28 pb-20 px-6 text-center">
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl mx-auto">
-          <div className="w-16 h-16 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center mx-auto mb-6">
-            <span className="text-3xl">🥗</span>
-          </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-4">
-            {t('title')}
-          </h1>
-          <p className="text-base md:text-lg text-green-200/60 max-w-xl mx-auto mb-8">
-            {t('subtitle')}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-full shadow-lg shadow-green-500/30 hover:shadow-green-500/50 hover:scale-105 transition-all duration-300 text-sm">
-              {t('browseCTA')}
-            </button>
-            <Link href="/onboarding/gender"
-              className="px-8 py-4 border border-green-500/40 text-green-300 font-bold rounded-full hover:bg-green-500/10 hover:border-green-400 transition-all duration-300 text-sm">
-              {t('bookMealCTA')}
-            </Link>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* CATEGORY TABS */}
-      <section className="px-6 mb-8">
-        <div className="max-w-5xl mx-auto flex gap-2 overflow-x-auto pb-2 scrollbar-none justify-center flex-wrap">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCat(cat)}
-              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap ${
-                activeCat === cat
-                  ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
-                  : 'bg-white/5 text-green-300/60 hover:bg-white/10 hover:text-green-300'
-              }`}
-            >
-              {categoryNames[cat]}
-            </button>
+      {/* ── NAVBAR ── */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 h-[70px] flex items-center justify-between px-5 md:px-16 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur shadow-sm' : 'bg-transparent'}`}>
+        <div className="flex items-center gap-2">
+          <div className="size-9 rounded-full bg-[#e8a020] flex items-center justify-center text-white text-lg font-bold">🍊</div>
+          <span className="nav-brand text-[22px] font-bold text-gray-900">{isAr ? 'لوفرز دايت' : 'Lovers Diet'}</span>
+        </div>
+        <div className="hidden md:flex items-center gap-8">
+          {[
+            { label: isAr ? 'الرئيسية' : 'Home', href: '/' },
+            { label: isAr ? 'القائمة' : 'Menu', href: '#menu' },
+            { label: isAr ? 'من نحن' : 'About us', href: '#about' },
+            { label: isAr ? 'الحجز' : 'Reservation', href: '#reserve' },
+            { label: isAr ? 'المدونة' : 'Blog', href: '#blog' },
+          ].map((l, i) => (
+            <Link key={l.label} href={l.href} className={`text-[15px] font-medium transition-colors duration-200 ${i === 0 ? 'text-[#e8a020]' : 'text-gray-900 hover:text-[#e8a020]'}`}>{l.label}</Link>
           ))}
         </div>
-      </section>
-
-      {/* PRODUCT GRID */}
-      <section id="products" className="px-6 pb-20">
-        <div className="max-w-5xl mx-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeCat}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {filtered.map((meal) => (
-                <motion.div
-                  key={meal.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="group relative bg-[#0a2818] border border-green-900/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-green-500/10 transition-all duration-300 hover:-translate-y-2"
-                >
-                  {/* Image */}
-                  <div className="relative h-52 overflow-hidden">
-                    <Image src={meal.image} alt={meal.name.en} fill className="object-cover group-hover:scale-110 transition-transform duration-500" unoptimized />
-                    <span className="absolute top-3 right-3 bg-green-500/90 text-white text-[10px] px-3 py-1 rounded-full font-semibold backdrop-blur-sm">
-                      {categoryNames[meal.category] || meal.category}
-                    </span>
-                  </div>
-                  {/* Content */}
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold text-white mb-1.5">{meal.name.en}</h3>
-                    <p className="text-sm text-green-200/50 mb-4 line-clamp-2">{meal.description.en}</p>
-                    {/* Nutrition */}
-                    <div className="flex gap-1.5 mb-4 flex-wrap">
-                      <span className="bg-green-900/60 text-green-300 text-[10px] px-2 py-0.5 rounded font-medium">{meal.nutrition.calories} {t('nutrition.calories')}</span>
-                      <span className="bg-blue-900/60 text-blue-300 text-[10px] px-2 py-0.5 rounded font-medium">{meal.nutrition.protein}g {t('nutrition.protein')}</span>
-                      <span className="bg-yellow-900/60 text-yellow-300 text-[10px] px-2 py-0.5 rounded font-medium">{meal.nutrition.carbs}g {t('nutrition.carbs')}</span>
-                      <span className="bg-red-900/60 text-red-300 text-[10px] px-2 py-0.5 rounded font-medium">{meal.nutrition.fats}g {t('nutrition.fats')}</span>
-                    </div>
-                    {/* Book button */}
-            <Link href="/onboarding/gender"
-                      className="block w-full text-center bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-green-500 text-white font-bold py-3 rounded-xl text-sm transition-all duration-300 shadow-lg shadow-green-500/20 hover:shadow-green-500/40">
-                      {t('bookNow')}
-                    </Link>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
-
-          {filtered.length === 0 && (
-            <div className="text-center py-20">
-              <p className="text-green-300/40 text-lg">No meals in this category yet.</p>
+        <div className="flex items-center gap-3">
+          <Link href={switchPath}
+            className="text-[12px] font-semibold text-gray-500 hover:text-gray-900 border border-gray-300 hover:border-gray-500 rounded-full px-3 py-1.5 transition-all duration-200">
+            {isAr ? 'EN' : 'AR'}
+          </Link>
+          <svg className="size-5 text-gray-600 hover:text-gray-900 cursor-pointer transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          <div className="relative cursor-pointer">
+            <div className="size-9 rounded-full bg-[#e8a020] flex items-center justify-center hover:scale-110 transition-transform">
+              <svg className="size-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>
             </div>
-          )}
+            <span className="absolute -top-1.5 -right-1.5 size-4 rounded-full bg-white border-2 border-[#dff0a0] flex items-center justify-center text-[9px] font-bold text-gray-900">0</span>
+          </div>
+          <svg className="md:hidden size-6 text-gray-900 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
         </div>
+      </nav>
+
+      {/* ── HERO ── */}
+      <section className="relative min-h-screen overflow-hidden bg-[#dff0a0] pt-[70px]">
+        {/* 3D Floating decorative elements */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-[15%] left-[8%] w-[100px] h-[100px] rounded-full border border-[#e8a020]/20 animate-pulse" style={{ animationDuration: '4s' }} />
+          <div className="absolute top-[25%] right-[10%] w-[70px] h-[70px] rounded-full bg-[#e8a020]/10 animate-pulse" style={{ animationDuration: '5s', animationDelay: '1s' }} />
+          <div className="absolute bottom-[30%] left-[5%] w-[50px] h-[50px] border-2 border-gray-900/10 rotate-45 animate-spin" style={{ animationDuration: '12s' }} />
+          <div className="absolute top-[40%] left-[45%] w-[180px] h-[180px] rounded-full bg-white/10 blur-3xl" />
+          <div className="absolute bottom-[25%] right-[15%] w-[30px] h-[30px] rounded-full bg-[#e8a020]/15 animate-bounce" style={{ animationDuration: '3s' }} />
+          <svg className="absolute top-[60%] left-[20%] w-14 h-14 text-[#e8a020]/10 animate-pulse" style={{ animationDuration: '6s' }} viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+          <svg className="absolute top-[12%] right-[30%] w-10 h-10 text-gray-900/5 animate-spin" style={{ animationDuration: '15s' }} viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="none" stroke="currentColor" strokeWidth="1"/></svg>
+        </div>
+
+        <div className="container mx-auto px-5 md:px-10 h-full flex items-center min-h-[calc(100vh-70px)]">
+          <div className="w-full max-w-4xl z-10">
+            <div className="fade-item fade-d1 flex items-center gap-3 mb-5">
+              <div className="w-10 h-[2px] bg-gray-400" />
+              <span className="text-[11px] text-gray-500 tracking-[0.15em] uppercase font-medium">{isAr ? 'أهلاً بك في لوفرز دايت' : 'Welcome to Lovers Diet'}</span>
+            </div>
+            <h1 className="fade-item fade-d2 hero-title font-bold text-gray-900 leading-[1.05] mb-6" style={{ fontSize: isAr ? 'clamp(56px,9vw,100px)' : 'clamp(48px,7vw,80px)' }}>
+              {isAr ? 'استمتع بوجبات' : 'Enjoy healthy &'}<br />
+              <span className="text-[#e8a020]">{isAr ? 'صحية ولذيذة.' : 'delicious food.'}</span>
+            </h1>
+            <div className="fade-item fade-d3 flex gap-4 flex-wrap mb-10">
+              <button onClick={() => document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth' })}
+                className="bg-gray-900 text-white font-semibold rounded-full py-3.5 px-8 text-[15px] min-w-[140px] hover:bg-gray-700 active:scale-95 transition-all duration-200">{isAr ? 'اطلب الآن' : 'Order Now'}</button>
+              <button className="bg-transparent border-2 border-gray-900 text-gray-900 font-semibold rounded-full py-3.5 px-8 text-[15px] min-w-[140px] hover:bg-black/5 active:scale-95 transition-all duration-200">{isAr ? 'احجز طاولة' : 'Book a Table'}</button>
+            </div>
+            <div ref={statsRef} className="fade-item fade-d4 flex gap-12 md:gap-16 items-end">
+              {[
+                { val: counts.c1 + '+', label: isAr ? 'وجبة صحية' : 'Healthy Meals' },
+                { val: counts.c2 + 'k+', label: isAr ? 'عميل سعيد' : 'Happy Customers' },
+              ].map((s) => (
+                <div key={s.label}>
+                  <p className="stat-number font-extrabold text-gray-900" style={{ fontSize: isAr ? '44px' : '36px' }}>{s.val}</p>
+                  <p className="stat-label text-[12px] md:text-[13px] text-gray-500 mt-0.5">{s.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/50 to-transparent pointer-events-none" />
       </section>
 
-      {/* CTA SECTION */}
-      <section className="relative py-20 px-6">
-        <div className="absolute inset-0 bg-gradient-to-br from-green-900/60 via-emerald-900/30 to-transparent" />
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(45deg, #4ade80 0, #4ade80 2px, transparent 2px, transparent 10px)' }} />
-        <div className="relative max-w-2xl mx-auto text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-black text-white mb-4"
-          >
-            {t('ctaTitle')}
-          </motion.h2>
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-          >
-            <Link href="/onboarding/gender"
-              className="inline-block px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-full shadow-lg shadow-green-500/30 hover:shadow-green-500/50 hover:scale-105 transition-all duration-300 text-base mb-6">
-              {t('ctaButton')}
-            </Link>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            <a href="https://wa.me/971529033110?text=Hello%2C%20I%20want%20to%20book%20a%20meal%20plan" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors text-sm">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-              </svg>
-              {t('whatsappText')}
-            </a>
-          </motion.div>
+      <div className="section-divider" />
+
+      {/* ── MENU CARDS ── */}
+      <motion.section id="menu" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={sectionVariant}
+        className="bg-white py-20 md:py-28 overflow-hidden">
+        <div className="px-5 md:px-16 mb-10">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-[2px] bg-gray-400" />
+            <span className="text-[11px] text-gray-500 uppercase tracking-[0.15em] font-medium">{isAr ? 'قائمتنا' : 'Our Menu'}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <h2 className="section-heading text-[36px] md:text-[42px] font-bold text-gray-900">{isAr ? 'أطباقنا المميزة' : 'Our Special Dishes'}</h2>
+            <a href="#" className="text-[14px] text-[#e8a020] underline underline-offset-2 hidden sm:block">{isAr ? 'عرض الكل ←' : 'View all →'}</a>
+          </div>
         </div>
-      </section>
+          <div className="relative" dir="ltr">
+          <div className="track px-5 md:px-16">
+            {[...menuItems, ...menuItems].map((item, idx) => (
+              <button key={idx} onClick={() => setSelectedMeal(item)}
+                className="group flex-shrink-0 w-[280px] bg-[#f8faf2] rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-[#e8a020] cursor-pointer">
+                <div className="relative h-44 bg-[#dff0a0] overflow-hidden">
+                  <Image src={item.image} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-500" unoptimized />
+                </div>
+                <div className="p-4">
+                  <span className="inline-block bg-lime-100 text-lime-700 text-[10px] uppercase font-semibold px-2.5 py-0.5 rounded-full mb-1.5">{item.cat}</span>
+                  <h3 className="card-title text-[16px] font-bold text-gray-900">{item.name}</h3>
+                  <p className="text-[12px] text-gray-500 mt-1 line-clamp-2">{item.desc}</p>
+                  <div className="flex items-center justify-between mt-3">
+                    <span className="card-price text-[18px] font-extrabold text-gray-900">{item.price}</span>
+                    <span className="text-[11px] text-[#e8a020] font-semibold">{isAr ? 'عرض التفاصيل ←' : 'View Details →'}</span>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+          <div className="absolute top-0 left-0 bottom-0 w-16 bg-gradient-to-r from-white to-transparent pointer-events-none z-10" />
+          <div className="absolute top-0 right-0 bottom-0 w-16 bg-gradient-to-l from-white to-transparent pointer-events-none z-10" />
+        </div>
+      </motion.section>
+
+      <div className="section-divider" />
+
+      {/* ── MEAL DETAIL MODAL ── */}
+      <AnimatePresence>
+        {selectedMeal && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={() => setSelectedMeal(null)}
+          >
+            <motion.div initial={{ scale: 0.9, opacity: 0, y: 30 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 30 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-3xl overflow-hidden max-w-lg w-full shadow-2xl"
+            >
+              <button onClick={() => setSelectedMeal(null)}
+                className="absolute top-4 right-4 size-8 rounded-full bg-black/10 hover:bg-black/20 flex items-center justify-center text-gray-700 transition-colors z-10">✕</button>
+              <div className="relative h-64 md:h-72 bg-[#dff0a0]">
+                <Image src={selectedMeal.image} alt={selectedMeal.name} fill className="object-cover" unoptimized />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                <span className="absolute bottom-4 left-4 bg-white/90 text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full">{selectedMeal.cat}</span>
+              </div>
+              <div className="p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">{selectedMeal.name}</h2>
+                <p className="text-sm text-gray-500 leading-relaxed mb-4">{selectedMeal.desc}</p>
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-[28px] font-extrabold text-gray-900">{selectedMeal.price}</span>
+                  <div className="flex items-center gap-1 text-amber-400 text-sm">
+                    ★★★★<span className="text-gray-300">★</span>
+                    <span className="text-gray-500 text-xs ml-1">(24 reviews)</span>
+                  </div>
+                </div>
+                <a href={`https://wa.me/971529033110?text=I%20want%20to%20order%20${encodeURIComponent(selectedMeal.name)}`} target="_blank" rel="noopener noreferrer"
+                  className="block w-full text-center py-3.5 bg-gray-900 text-white font-bold rounded-full hover:bg-gray-700 transition-all duration-300 text-sm shadow-lg">
+                  {isAr ? 'اطلب هذه الوجبة الآن' : 'Order This Meal Now'}
+                </a>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── WHY CHOOSE US ── */}
+      <motion.section id="about" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={sectionVariant}
+        className="bg-gray-900 py-24 px-5 md:px-16 text-white">
+        <div className="max-w-6xl mx-auto text-center">
+          <span className="text-[#e8a020] text-[11px] uppercase tracking-[0.15em] font-semibold">{isAr ? 'لماذا نحن' : 'Why Choose Us'}</span>
+            <h2 className="section-heading font-bold text-white mt-2 mb-16" style={{ fontSize: isAr ? '48px' : '42px' }}>{isAr ? 'نهتم بصحتك أولاً' : 'We Care About Your Health First'}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { icon: '🥗', title: isAr ? 'مكونات طازجة 100%' : '100% Fresh Ingredients', desc: isAr ? 'نستخدم أطعمة طازجة يومياً دون أي إضافات صناعية' : 'We use fresh ingredients daily with no artificial additives.' },
+              { icon: '🏃', title: isAr ? 'مناسب لأهدافك' : 'Fits Your Goals', desc: isAr ? 'وجبات مصممة لدعم رحلتك الصحية وأهداف لياقتك' : 'Meals designed to support your health journey and fitness goals.' },
+              { icon: '⚡', title: isAr ? 'توصيل سريع' : 'Fast Delivery', desc: isAr ? 'نوصل طلبك ساخناً وطازجاً في أقل من 45 دقيقة' : 'We deliver your order hot and fresh in under 45 minutes.' },
+            ].map((f, i) => (
+              <div key={i} className="text-center">
+                <div className="size-14 rounded-full bg-[#e8a020]/20 flex items-center justify-center mx-auto mb-4 text-2xl">{f.icon}</div>
+                <h3 className="text-[20px] font-bold text-white mb-2">{f.title}</h3>
+                <p className="text-gray-400 text-[14px] leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      <div className="h-1 bg-gradient-to-b from-gray-900 to-[#dff0a0]" />
+
+      {/* ── TESTIMONIALS ── */}
+      <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={sectionVariant}
+        className="bg-[#dff0a0] py-24 px-5 md:px-16">
+        <div className="max-w-6xl mx-auto text-center">
+          <span className="text-gray-500 text-[11px] uppercase tracking-[0.15em] font-semibold">{isAr ? 'آراء عملائنا' : 'Testimonials'}</span>
+          <h2 className="text-[42px] font-bold text-gray-900 mt-2 mb-16">{isAr ? 'ماذا يقولون عنا؟' : 'What Our Clients Say'}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.map((t, i) => (
+              <div key={i} className="bg-white rounded-3xl p-8 shadow-sm">
+                <div className="text-amber-400 text-sm mb-4">★★★★★</div>
+                <p className="text-[14px] text-gray-700 leading-relaxed italic mb-6">&ldquo;{t.quote}&rdquo;</p>
+                <div className="flex items-center gap-3">
+                  <div className={`size-12 rounded-full ${t.avatar} border-2 border-lime-200`} />
+                  <div>
+                    <p className="font-bold text-[15px] text-gray-900">{t.name}</p>
+                    <p className="text-[12px] text-gray-500">{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      <div className="h-1 bg-gradient-to-b from-[#dff0a0] to-gray-900" />
+
+      {/* ── CTA BANNER ── */}
+      <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={sectionVariant}
+        className="bg-gray-900 py-20 px-5 md:px-16 text-center">
+        <h2 className="cta-heading font-bold text-white mb-3" style={{ fontSize: isAr ? 'clamp(44px,7vw,60px)' : 'clamp(40px,5vw,48px)' }}>{isAr ? 'جاهز لبدء رحلتك؟' : 'Ready to Start Your Journey?'}</h2>
+        <p className="text-gray-400 text-[16px] mb-8">{isAr ? 'اطلب الآن واحصل على توصيل مجاني لأول طلب' : 'Order now and get free delivery on your first order.'}</p>
+        <button className="bg-[#e8a020] hover:bg-amber-500 text-white font-bold text-[16px] px-12 py-4 rounded-full hover:scale-105 transition-all duration-300 shadow-lg shadow-[#e8a020]/30">
+          {isAr ? 'اطلب الآن ←' : 'Order Now →'}
+        </button>
+      </motion.section>
 
     </div>
   )
